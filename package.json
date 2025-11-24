@@ -1,0 +1,18 @@
+{
+  "name": "cp-exam-coaching",
+  "version": "1.0.0",
+  "description": "C&P Exam Coaching Landing Page with Stripe and Calendly Integration",
+  "scripts": {
+    "dev": "node local-server.js",
+    "dev:vercel": "vercel dev",
+    "build": "echo 'Build complete'",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "stripe": "^14.10.0"
+  },
+  "devDependencies": {
+    "vercel": "^33.0.0"
+  }
+}
