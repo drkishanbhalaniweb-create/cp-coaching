@@ -1,8 +1,11 @@
 {
-    "rewrites": [
-        {
-            "source": "/api/(.*)",
-            "destination": "/api/$1"
+    "version": 2,
+    "buildCommand": "echo 'No build needed'",
+    "outputDirectory": ".",
+    "installCommand": "npm install",
+    "functions": {
+        "api/**/*.js": {
+            "runtime": "nodejs18.x"
         }
-    ]
+    }
 }
