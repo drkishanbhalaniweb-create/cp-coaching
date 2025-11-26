@@ -183,23 +183,6 @@
       max-width: 35rem;
     }
 
-    .hero-feels {
-      font-size: 0.88rem;
-      color: #e5e7eb;
-      margin-bottom: 14px;
-    }
-
-    .hero-feels span {
-      display: inline-block;
-      margin-right: 8px;
-      margin-bottom: 3px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid rgba(148, 163, 184, 0.45);
-      font-size: 0.78rem;
-    }
-
     .hero-list-label {
       font-size: 0.8rem;
       text-transform: uppercase;
@@ -483,10 +466,8 @@
     }
 
     .two-column {
-      display: grid;
-      grid-template-columns: minmax(0, 3fr) minmax(0, 2.5fr);
-      gap: 24px;
-      align-items: flex-start;
+      display: block;
+      max-width: 700px;
     }
 
     .stat-bar {
@@ -537,70 +518,49 @@
       color: #166534;
     }
 
-    .ba-title {
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: var(--primary-dark);
-    }
+    /* TESTIMONIAL */
 
-    /* TESTIMONIALS */
-
-    .testimonial-strip {
-      display: grid;
-      grid-template-columns: minmax(0, 1.6fr) minmax(0, 2fr);
-      gap: 16px;
+    .testimonial-box {
       background: linear-gradient(135deg, #0f172a, #1e293b);
       border-radius: var(--radius-xl);
-      padding: 16px 18px 16px;
+      padding: 32px 36px;
       color: #e5e7eb;
       box-shadow: 0 18px 36px rgba(15, 23, 42, 0.55);
+      max-width: 800px;
+      margin: 0 auto;
     }
 
-    .testimonial-tag {
-      display: inline-flex;
+    .testimonial-header {
+      display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 0.78rem;
-      letter-spacing: 0.13em;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .testimonial-star {
+      color: #fbbf24;
+      font-size: 1.2rem;
+    }
+
+    .testimonial-label {
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       color: #9ca3af;
-      margin-bottom: 6px;
+      font-weight: 600;
     }
 
-    .testimonial-main {
-      font-size: 0.95rem;
-      margin-bottom: 4px;
+    .testimonial-quote {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: 16px;
+      color: #f9fafb;
     }
 
-    .testimonial-name {
-      font-size: 0.8rem;
+    .testimonial-author {
+      font-size: 0.9rem;
       color: #9ca3af;
-    }
-
-    .testimonial-note {
-      font-size: 0.8rem;
-      color: #9ca3af;
-      margin-top: 4px;
-    }
-
-    .testimonial-bullets {
-      list-style: none;
-      font-size: 0.85rem;
-      color: #d1d5db;
-      margin-top: 4px;
-    }
-
-    .testimonial-bullets li {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 4px;
-    }
-
-    .testimonial-bullets li::before {
-      content: "✓";
-      color: #4ade80;
-      font-size: 0.8rem;
-      margin-top: 1px;
+      font-style: italic;
     }
 
     /* FAQ */
@@ -630,66 +590,6 @@
       font-size: 0.78rem;
       color: var(--muted);
       margin-top: 16px;
-    }
-
-    /* ABOUT */
-
-    .about-box {
-      background: var(--white);
-      border-radius: var(--radius-xl);
-      padding: 16px 18px;
-      border: 1px solid var(--border);
-      box-shadow: 0 16px 28px rgba(15, 23, 42, 0.08);
-      font-size: 0.9rem;
-    }
-
-    .about-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.5fr) minmax(0, 2.2fr);
-      gap: 18px;
-      align-items: center;
-    }
-
-    .about-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: #eff6ff;
-      color: #1d4ed8;
-      font-size: 0.78rem;
-      margin-bottom: 6px;
-    }
-
-    .about-title {
-      font-size: 1.05rem;
-      font-weight: 650;
-      margin-bottom: 4px;
-      color: var(--primary-dark);
-    }
-
-    .about-body {
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    .about-points {
-      list-style: none;
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 0.88rem;
-    }
-
-    .about-points li {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 4px;
-    }
-
-    .about-points li::before {
-      content: "•";
-      color: var(--primary);
     }
 
     /* CTA */
@@ -759,14 +659,6 @@
 
       .cards-3 {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .testimonial-strip {
-        grid-template-columns: minmax(0, 1fr);
-      }
-
-      .about-grid {
-        grid-template-columns: minmax(0, 1fr);
       }
 
       .cta-banner {
@@ -989,7 +881,6 @@
       <div class="ba-grid">
         <div class="ba-card">
           <div class="ba-label before">Before coaching</div>
-          <div class="ba-title">How many veterans tell us they feel</div>
           <ul class="list">
             <li>&quot;I&apos;m anxious and can&apos;t stop replaying worst-case scenarios.&quot;</li>
             <li>&quot;I don&apos;t know what they&apos;re actually looking for.&quot;</li>
@@ -1000,7 +891,6 @@
 
         <div class="ba-card">
           <div class="ba-label after">After coaching</div>
-          <div class="ba-title">How we want you to feel</div>
           <ul class="list">
             <li>&quot;I know what the exam is trying to figure out and how my story fits in.&quot;</li>
             <li>&quot;I have words to describe my bad days without feeling dramatic or fake.&quot;</li>
@@ -1045,91 +935,22 @@
           </div>
         </div>
 
-        <div>
-          <div class="section-header">
-            <div class="section-label">What you walk away with</div>
-            <h2 class="section-title">By the end of the hour, you&apos;ll have…</h2>
-          </div>
-          <ul class="list">
-            <li>
-              A realistic picture of what will happen in the exam and why certain questions are asked.
-            </li>
-            <li>
-              Language you feel comfortable using to describe your symptoms, limitations, and &quot;bad days vs. good
-              days.&quot;
-            </li>
-            <li>
-              A clearer sense of what you can control (your preparation and communication) and what you can&apos;t.
-            </li>
-            <li>
-              A simple personal &quot;game plan&quot; for the morning of your exam so you&apos;re not scrambling at the
-              last minute.
-            </li>
-          </ul>
-        </div>
       </div>
     </section>
 
-    <!-- TESTIMONIAL STRIP (PLACEHOLDER TEXT TO BE REPLACED BY REAL QUOTES) -->
+    <!-- TESTIMONIAL -->
     <section class="section">
-      <div class="testimonial-strip">
-        <div>
-          <div class="testimonial-tag">
-            <span>★ SAMPLE FEEDBACK (REPLACE WITH REAL STORY)</span>
-          </div>
-          <p class="testimonial-main">
-            &quot;I walked into my last exam feeling scattered and walked out wishing I&apos;d said things differently.
-            After this session, I still had nerves—but I knew what to expect and how to explain what my days actually
-            look like. It felt like I could finally advocate for myself without sounding over the top.&quot;
-          </p>
-          <div class="testimonial-name">— Army veteran</div>
-          <p class="testimonial-note">
-            Replace this section with real feedback from veterans you&apos;ve worked with. Short, specific stories build
-            trust and help other veterans see themselves in the experience.
-          </p>
+      <div class="testimonial-box">
+        <div class="testimonial-header">
+          <span class="testimonial-star">★</span>
+          <span class="testimonial-label">Feedback</span>
         </div>
-        <div>
-          <ul class="testimonial-bullets">
-            <li>Use real branch/service (with permission) instead of &quot;Army veteran.&quot;</li>
-            <li>Keep quotes focused on how they felt before vs. after the session.</li>
-            <li>Avoid mentioning specific ratings or outcomes; focus on clarity, confidence, and feeling heard.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- ABOUT YOU / TRUST -->
-    <section class="section">
-      <div class="about-box">
-        <div class="about-grid">
-          <div>
-            <div class="about-chip">
-              <span>ABOUT THIS SERVICE</span>
-            </div>
-            <div class="about-title">Why Military Disability Nexus offers C&amp;P coaching</div>
-            <p class="about-body">
-              C&amp;P exams can feel like a pass/fail test of your entire story. Too many veterans walk in with no real
-              preparation, then walk out replaying everything they wish they&apos;d said. This service exists to change
-              that dynamic—without crossing into legal advice or making promises no one can ethically make.
-            </p>
-          </div>
-          <div>
-            <ul class="about-points">
-              <li>
-                We focus on <strong>education, preparation, and communication</strong>—not representation or claim
-                filing.
-              </li>
-              <li>
-                We stay in our lane so you can stay in control: you decide what to say, what to file, and who (if
-                anyone) represents you.
-              </li>
-              <li>
-                Our goal is simple: when you walk into that room (or log into that call), you feel more grounded, more
-                prepared, and more able to speak for yourself.
-              </li>
-            </ul>
-          </div>
-        </div>
+        <p class="testimonial-quote">
+          &quot;I walked into my last exam feeling scattered and walked out wishing I&apos;d said things differently.
+          After this session, I still had nerves—but I knew what to expect and how to explain what my days actually
+          look like. It felt like I could finally advocate for myself without sounding over the top.&quot;
+        </p>
+        <div class="testimonial-author">— Army veteran</div>
       </div>
     </section>
 
@@ -1192,8 +1013,7 @@
 
       <p class="disclaimer">
         <strong>Disclaimer:</strong> Military Disability Nexus is not affiliated with the Department of Veterans Affairs
-        (VA) and does not provide legal representation or legal advice. We provide education and coaching only. For
-        questions about your specific legal rights, please consult an accredited representative or attorney.
+        (VA) and does not provide legal representation or legal advice. We provide education and coaching only.
       </p>
     </section>
 
