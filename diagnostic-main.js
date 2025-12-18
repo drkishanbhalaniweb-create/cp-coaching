@@ -87,9 +87,9 @@ class DiagnosticApp {
       }, 400); // Match animation duration
     });
 
-    // Handle CTA button click - redirect to booking page
+    // Handle CTA button click - redirect to home page
     this.renderer.onBookingClicked(() => {
-      console.log('CTA button clicked - redirecting to booking page');
+      console.log('CTA button clicked - redirecting to home page');
       
       // Get the current recommendation
       const recommendation = this.controller.getRecommendation();
@@ -97,8 +97,8 @@ class DiagnosticApp {
       // Log the booking intent
       console.log(`Booking initiated from recommendation: ${recommendation.category}`);
       
-      // Redirect to the main landing page with booking section
-      window.location.href = '/index.html#book';
+      // Redirect to the home page
+      window.location.href = '/';
     });
 
     // Handle successful Calendly booking
