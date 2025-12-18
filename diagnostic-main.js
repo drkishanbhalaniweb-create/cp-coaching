@@ -97,6 +97,9 @@ class DiagnosticApp {
       // Log the booking intent
       console.log(`Booking initiated from recommendation: ${recommendation.category}`);
       
+      // Mark that user has completed diagnostic and wants to book
+      sessionStorage.setItem('diagnosticCompleted', 'true');
+      
       // Redirect to the home page
       window.location.href = '/';
     });

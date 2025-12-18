@@ -3659,8 +3659,20 @@
     /**
      * Redirect users to the diagnostic page on first visit
      * Only redirects if user is on the root page without any hash or query params
+     * and hasn't completed the diagnostic yet
      */
     function redirectToDiagnostic() {
+      // Check if user has completed the diagnostic
+      const diagnosticCompleted = sessionStorage.getItem('diagnosticCompleted');
+      
+      // If diagnostic was completed, don't redirect (user wants to book)
+      if (diagnosticCompleted === 'true') {
+        console.log('Diagnostic completed - staying on home page');
+        // Clear the flag so future visits will redirect again
+        sessionStorage.removeItem('diagnosticCompleted');
+        return;
+      }
+      
       // Check if we're on the root page (index.html or /)
       const isRootPage = window.location.pathname === '/' || 
                          window.location.pathname === '/index.html' ||
