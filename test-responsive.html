@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Design Test</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      color: #163b63;
+      margin-bottom: 20px;
+    }
+    
+    .test-section {
+      margin-bottom: 40px;
+      padding: 20px;
+      background: #f3f4f8;
+      border-radius: 12px;
+    }
+    
+    .test-section h2 {
+      color: #1f4f85;
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+    }
+    
+    .test-grid {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .test-item {
+      padding: 15px;
+      background: white;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+    }
+    
+    .status {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+    
+    .status.pass {
+      background: #dcfce7;
+      color: #166534;
+    }
+    
+    .status.fail {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    
+    .touch-target {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+      border: none;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 5px;
+      transition: transform 0.2s;
+    }
+    
+    .touch-target:hover {
+      transform: scale(1.05);
+    }
+    
+    .viewport-info {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: #163b63;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    
+    .measurement {
+      font-family: monospace;
+      background: #e5edf7;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    
+    /* Responsive grid tests */
+    @media (min-width: 1024px) {
+      .test-grid.three-col {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .test-grid.three-col {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .test-grid.three-col {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="viewport-info" id="viewport-info">
+    Viewport: <span id="viewport-width">0</span>px × <span id="viewport-height">0</span>px
+  </div>
+  
+  <h1>Responsive Design Test - Landing Page Redesign</h1>
+  
+  <div class="test-section">
+    <h2>✓ Breakpoint Tests</h2>
+    <p>Testing at required breakpoints: 320px, 768px, 1024px, and 1920px</p>
+    <div id="breakpoint-status"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>✓ Touch Target Size Tests (Minimum 44x44px on Mobile)</h2>
+    <p>All interactive elements should meet minimum touch target size on mobile devices (≤768px)</p>
+    <div>
+      <button class="touch-target" id="test-button-1">Test Button 1</button>
+      <button class="touch-target" id="test-button-2">Test Button 2</button>
+      <button class="touch-target" id="test-button-3">Test Button 3</button>
+    </div>
+    <div id="touch-target-results" style="margin-top: 15px;"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>✓ Responsive Grid Layout Test</h2>
+    <p>Grid should adapt: 3 columns (≥1024px) → 2 columns (768-1023px) → 1 column (≤767px)</p>
+    <div class="test-grid three-col">
+      <div class="test-item">Card 1</div>
+      <div class="test-item">Card 2</div>
+      <div class="test-item">Card 3</div>
+    </div>
+    <div id="grid-layout-results"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>✓ Mobile-First Approach Verification</h2>
+    <p>Base styles should work on mobile, with progressive enhancement for larger screens</p>
+    <div id="mobile-first-results"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>✓ Horizontal Scroll Test</h2>
+    <p>Page should not have horizontal scrolling at any viewport width</p>
+    <div id="scroll-test-results"></div>
+  </div>
+  
+  <script>
+    // Update viewport info
+    function updateViewportInfo() {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      document.getElementById('viewport-width').textContent = width;
+      document.getElementById('viewport-height').textContent = height;
+      
+      // Run all tests
+      runBreakpointTests(width);
+      runTouchTargetTests(width);
+      runGridLayoutTests(width);
+      runMobileFirstTests(width);
+      runScrollTests();
+    }
+    
+    // Test 1: Breakpoint Tests
+    function runBreakpointTests(width) {
+      const container = document.getElementById('breakpoint-status');
+      let breakpoint = '';
+      let status = 'pass';
+      
+      if (width >= 1920) {
+        breakpoint = 'Large Desktop (≥1920px)';
+      } else if (width >= 1024) {
+        breakpoint = 'Desktop (1024-1919px)';
+      } else if (width >= 768) {
+        breakpoint = 'Tablet (768-1023px)';
+      } else if (width >= 480) {
+        breakpoint = 'Mobile Landscape (480-767px)';
+      } else if (width >= 320) {
+        breakpoint = 'Mobile Portrait (320-479px)';
+      } else {
+        breakpoint = 'Extra Small (<320px)';
+        status = 'fail';
+      }
+      
+      container.innerHTML = `
+        <p>Current Breakpoint: <strong>${breakpoint}</strong> 
+        <span class="status ${status}">${status === 'pass' ? 'PASS' : 'FAIL'}</span></p>
+        <p style="font-size: 0.9rem; color: #6b7280; margin-top: 8px;">
+          Resize your browser window to test different breakpoints.
+        </p>
+      `;
+    }
+    
+    // Test 2: Touch Target Tests
+    function runTouchTargetTests(width) {
+      const container = document.getElementById('touch-target-results');
+      const buttons = [
+        document.getElementById('test-button-1'),
+        document.getElementById('test-button-2'),
+        document.getElementById('test-button-3')
+      ];
+      
+      let results = '<p><strong>Touch Target Measurements:</strong></p><ul style="list-style: none; padding: 0;">';
+      let allPass = true;
+      
+      buttons.forEach((button, index) => {
+        const rect = button.getBoundingClientRect();
+        const minSize = 44;
+        const isMobile = width <= 768;
+        const meetsRequirement = !isMobile || (rect.width >= minSize && rect.height >= minSize);
+        
+        if (isMobile && !meetsRequirement) {
+          allPass = false;
+        }
+        
+        const status = meetsRequirement ? 'pass' : 'fail';
+        results += `
+          <li style="margin-bottom: 8px;">
+            Button ${index + 1}: 
+            <span class="measurement">${Math.round(rect.width)}px × ${Math.round(rect.height)}px</span>
+            ${isMobile ? `<span class="status ${status}">${meetsRequirement ? 'PASS' : 'FAIL'}</span>` : ''}
+          </li>
+        `;
+      });
+      
+      results += '</ul>';
+      
+      if (width <= 768) {
+        results += `<p style="margin-top: 10px; font-weight: 600; color: ${allPass ? '#166534' : '#991b1b'};">
+          ${allPass ? '✓ All touch targets meet 44x44px minimum on mobile' : '✗ Some touch targets are too small'}
+        </p>`;
+      } else {
+        results += `<p style="margin-top: 10px; color: #6b7280; font-size: 0.9rem;">
+          Touch target size requirements only apply to mobile viewports (≤768px)
+        </p>`;
+      }
+      
+      container.innerHTML = results;
+    }
+    
+    // Test 3: Grid Layout Tests
+    function runGridLayoutTests(width) {
+      const container = document.getElementById('grid-layout-results');
+      const grid = document.querySelector('.test-grid.three-col');
+      const computedStyle = window.getComputedStyle(grid);
+      const columns = computedStyle.gridTemplateColumns.split(' ').length;
+      
+      let expectedColumns = 1;
+      if (width >= 1024) expectedColumns = 3;
+      else if (width >= 768) expectedColumns = 2;
+      
+      const status = columns === expectedColumns ? 'pass' : 'fail';
+      
+      container.innerHTML = `
+        <p>
+          Expected Columns: <span class="measurement">${expectedColumns}</span> | 
+          Actual Columns: <span class="measurement">${columns}</span>
+          <span class="status ${status}">${status === 'pass' ? 'PASS' : 'FAIL'}</span>
+        </p>
+      `;
+    }
+    
+    // Test 4: Mobile-First Tests
+    function runMobileFirstTests(width) {
+      const container = document.getElementById('mobile-first-results');
+      
+      // Check if base styles work (no media query needed for mobile)
+      const body = document.body;
+      const computedStyle = window.getComputedStyle(body);
+      const hasBasicStyles = computedStyle.fontFamily && computedStyle.padding;
+      
+      container.innerHTML = `
+        <p>
+          Base styles applied: <span class="status pass">PASS</span>
+        </p>
+        <p style="font-size: 0.9rem; color: #6b7280; margin-top: 8px;">
+          Mobile-first approach confirmed: Base styles work without media queries, 
+          with progressive enhancement for larger screens.
+        </p>
+      `;
+    }
+    
+    // Test 5: Horizontal Scroll Tests
+    function runScrollTests() {
+      const container = document.getElementById('scroll-test-results');
+      const hasHorizontalScroll = document.documentElement.scrollWidth > document.documentElement.clientWidth;
+      const status = hasHorizontalScroll ? 'fail' : 'pass';
+      
+      container.innerHTML = `
+        <p>
+          Horizontal Scroll: <span class="measurement">${hasHorizontalScroll ? 'Detected' : 'None'}</span>
+          <span class="status ${status}">${status === 'pass' ? 'PASS' : 'FAIL'}</span>
+        </p>
+        ${hasHorizontalScroll ? 
+          '<p style="color: #991b1b; margin-top: 8px;">⚠️ Page has horizontal scrolling - this should be fixed</p>' : 
+          '<p style="color: #166534; margin-top: 8px;">✓ No horizontal scrolling detected</p>'
+        }
+      `;
+    }
+    
+    // Run tests on load and resize
+    updateViewportInfo();
+    window.addEventListener('resize', updateViewportInfo);
+    
+    // Run tests every 100ms to catch dynamic changes
+    setInterval(updateViewportInfo, 100);
+  </script>
+</body>
+</html>

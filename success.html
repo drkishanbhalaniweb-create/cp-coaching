@@ -194,40 +194,93 @@
     <div class="container">
         <div class="success-header">
             <div class="success-icon">✓</div>
-            <h1>Payment Successful!</h1>
-            <p class="subtitle">Thank you for your purchase. Now let's schedule your C&amp;P Exam Coaching Session.</p>
+            <h1>Booking Confirmed!</h1>
+            <p class="subtitle">Your payment was successful and your C&amp;P Exam Coaching Session is confirmed.</p>
         </div>
         <div class="info-box">
             <h2>📋 What Happens Next</h2>
-            <p>You've successfully paid for your 60‑minute C&amp;P Exam Coaching Session. Here's what to expect:</p>
+            <p>You've successfully booked and paid for your 60‑minute C&amp;P Exam Coaching Session. Here's what to expect:</p>
             <ul>
-                <li>Choose a convenient time below using our scheduling calendar</li>
                 <li>You'll receive a confirmation email with session details and a calendar invite</li>
+                <li>Your booking is confirmed and secured with your payment</li>
                 <li>Before the session, gather any exam notices or notes about your symptoms</li>
                 <li>We'll meet via phone or secure video at your scheduled time</li>
+                <li>If you need to reschedule, use the link in your confirmation email</li>
             </ul>
         </div>
-        <div class="calendly-container">
-            <h2>📅 Schedule Your Session</h2>
-            <div id="calendly-embed"></div>
+        <div class="info-box">
+            <h2>💳 Payment Confirmation</h2>
+            <p>Your payment has been processed successfully. You'll receive a receipt via email shortly.</p>
+            <p id="session-info" style="margin-top: 12px; padding: 12px; background: #f0fdf4; border-radius: 8px; border: 1px solid #86efac;">
+                <strong style="color: #166534;">Session ID:</strong> <span id="session-id-display" style="color: #166534; font-family: monospace;">Loading...</span>
+            </p>
+        </div>
+        <div class="info-box">
+            <h2>📞 Need Help?</h2>
+            <p>If you have any questions or need to make changes to your booking, please contact us:</p>
+            <ul>
+                <li>Email: <a href="mailto:info@militarydisabilitynexus.com" style="color: #163b63; text-decoration: underline;">info@militarydisabilitynexus.com</a></li>
+                <li>Phone: <a href="tel:+13073012019" style="color: #163b63; text-decoration: underline;">+1 307 301-2019</a></li>
+            </ul>
+        </div>
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="/index.html" style="display: inline-block; background: linear-gradient(135deg, #163b63, #0f243d); 
+                                         color: white; padding: 14px 28px; border-radius: 999px; text-decoration: none; 
+                                         font-weight: 600; box-shadow: 0 10px 30px rgba(22, 59, 99, 0.3); 
+                                         transition: transform 0.2s, box-shadow 0.2s;">
+                ← Return to Home
+            </a>
         </div>
     </div>
     <footer>© <span id="year"></span> Military Disability Nexus. All rights reserved.</footer>
     <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
+        
+        // Get session ID from URL
         const urlParams = new URLSearchParams(window.location.search);
         const sessionId = urlParams.get('session_id');
-        const calendlyUrl = 'https://calendly.com/dr-kishanbhalani-web/c-p-examination-coaching';
-        Calendly.initInlineWidget({
-            url: calendlyUrl,
-            parentElement: document.getElementById('calendly-embed'),
-            prefill: { customAnswers: { a1: sessionId || 'direct' } },
-            utm: { utmSource: 'stripe_payment', utmMedium: 'success_page', utmCampaign: 'cp_exam_coaching' }
-        });
+        
+        // Display session ID
+        const sessionIdDisplay = document.getElementById('session-id-display');
         if (sessionId) {
+            sessionIdDisplay.textContent = sessionId;
             console.log('Payment successful. Session ID:', sessionId);
+            
+            // Clear any pending booking data from session storage
+            sessionStorage.removeItem('pendingBookingSessionId');
+            sessionStorage.removeItem('pendingBookingData');
+            
+            // Log booking confirmation
+            console.log('Booking confirmed after successful payment');
+            
+            // Optional: Send analytics event
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'purchase', {
+                    transaction_id: sessionId,
+                    value: 150.00,
+                    currency: 'USD',
+                    items: [{
+                        item_id: 'cp-exam-coaching',
+                        item_name: 'C&P Exam Coaching Session',
+                        price: 150.00,
+                        quantity: 1
+                    }]
+                });
+                
+                gtag('event', 'booking_confirmed', {
+                    event_category: 'Booking',
+                    event_label: 'CP Exam Coaching',
+                    value: 150.00
+                });
+            }
+        } else {
+            sessionIdDisplay.textContent = 'Not available';
+            console.warn('No session ID found in URL');
         }
+        
+        // Show success message
+        console.log('Payment and booking confirmed successfully');
     </script>
 </body>
 

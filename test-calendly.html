@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendly Integration Test</title>
+  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+  <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    button {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 999px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 10px;
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+    #inline-container {
+      min-height: 700px;
+      margin-top: 20px;
+    }
+    .status {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      background: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Calendly Integration Test</h1>
+  
+  <div class="status" id="status">
+    Status: <span id="status-text">Initializing...</span>
+  </div>
+  
+  <div>
+    <button onclick="testPopup()">Test Popup Widget</button>
+    <button onclick="testInline()">Test Inline Widget</button>
+  </div>
+  
+  <div id="inline-container" style="display: none;"></div>
+  
+  <script>
+    // Test Calendly URL (replace with actual URL)
+    const CALENDLY_URL = 'https://calendly.com/your-username/30min';
+    
+    // Check if Calendly loaded
+    function checkCalendlyLoaded() {
+      if (typeof Calendly !== 'undefined') {
+        document.getElementById('status-text').textContent = 'Calendly loaded successfully ✓';
+        document.getElementById('status').style.background = '#d4edda';
+        return true;
+      } else {
+        document.getElementById('status-text').textContent = 'Calendly not loaded yet...';
+        return false;
+      }
+    }
+    
+    // Test popup
+    function testPopup() {
+      if (!checkCalendlyLoaded()) {
+        alert('Calendly script not loaded yet. Please wait a moment and try again.');
+        return;
+      }
+      
+      try {
+        Calendly.initPopupWidget({
+          url: CALENDLY_URL
+        });
+        console.log('Popup opened successfully');
+      } catch (error) {
+        console.error('Error opening popup:', error);
+        alert('Error: ' + error.message);
+      }
+    }
+    
+    // Test inline
+    function testInline() {
+      if (!checkCalendlyLoaded()) {
+        alert('Calendly script not loaded yet. Please wait a moment and try again.');
+        return;
+      }
+      
+      try {
+        const container = document.getElementById('inline-container');
+        container.style.display = 'block';
+        container.innerHTML = ''; // Clear previous content
+        
+        Calendly.initInlineWidget({
+          url: CALENDLY_URL,
+          parentElement: container
+        });
+        
+        console.log('Inline widget embedded successfully');
+      } catch (error) {
+        console.error('Error embedding inline:', error);
+        alert('Error: ' + error.message);
+      }
+    }
+    
+    // Listen for Calendly events
+    window.addEventListener('message', function(e) {
+      if (e.origin === 'https://calendly.com' && e.data.event) {
+        console.log('Calendly event:', e.data.event);
+        
+        if (e.data.event === 'calendly.event_scheduled') {
+          alert('Event scheduled successfully!');
+        }
+      }
+    });
+    
+    // Check on load
+    setTimeout(checkCalendlyLoaded, 1000);
+    setTimeout(checkCalendlyLoaded, 3000);
+  </script>
+</body>
+</html>

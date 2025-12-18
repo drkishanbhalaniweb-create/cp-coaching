@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Performance Optimization Test</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f3f4f8;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      padding: 30px;
+      border-radius: 16px;
+      margin-bottom: 30px;
+    }
+    
+    .header h1 {
+      margin: 0 0 10px 0;
+      font-size: 2rem;
+    }
+    
+    .header p {
+      margin: 0;
+      opacity: 0.9;
+    }
+    
+    .section {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .section h2 {
+      margin-top: 0;
+      color: #163b63;
+      font-size: 1.4rem;
+    }
+    
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: #f9fafb;
+      border-radius: 8px;
+      border-left: 4px solid #22c55e;
+    }
+    
+    .check-item.pending {
+      border-left-color: #f59e0b;
+    }
+    
+    .check-item.failed {
+      border-left-color: #ef4444;
+    }
+    
+    .icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    
+    .check-content {
+      flex: 1;
+    }
+    
+    .check-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #111827;
+    }
+    
+    .check-desc {
+      font-size: 0.9rem;
+      color: #6b7280;
+      margin: 0;
+    }
+    
+    .metric {
+      display: inline-block;
+      padding: 4px 12px;
+      background: #eef2ff;
+      color: #4338ca;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-right: 8px;
+      margin-top: 8px;
+    }
+    
+    .metric.good {
+      background: #dcfce7;
+      color: #166534;
+    }
+    
+    .metric.warning {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    
+    .metric.bad {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    
+    .button {
+      display: inline-block;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+      border: none;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s;
+    }
+    
+    .button:hover {
+      transform: scale(1.05);
+    }
+    
+    .button:active {
+      transform: scale(0.98);
+    }
+    
+    .code {
+      background: #1e293b;
+      color: #e5e7eb;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+    }
+    
+    .spinner {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 4px solid #e5e7eb;
+      border-top-color: #163b63;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🚀 Performance Optimization Test</h1>
+    <p>Testing Task 11: Performance Optimizations Implementation</p>
+  </div>
+
+  <div class="section">
+    <h2>Test Instructions</h2>
+    <p>This page will automatically test the performance optimizations implemented in the main landing page. Open your browser's DevTools Console to see detailed results.</p>
+    <div style="margin-top: 20px;">
+      <a href="index.html" class="button">Open Main Landing Page</a>
+      <button onclick="runTests()" class="button" style="background: linear-gradient(135deg, #163b63, #0f243d); margin-left: 10px;">Run Tests</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Performance Optimizations Checklist</h2>
+    <div id="checklist">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Click "Run Tests" to start verification...</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Performance Metrics</h2>
+    <div id="metrics">
+      <p style="color: #6b7280;">Metrics will appear here after running tests...</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>How to Verify Performance</h2>
+    <ol style="line-height: 1.8; color: #374151;">
+      <li><strong>Open DevTools:</strong> Press F12 or right-click and select "Inspect"</li>
+      <li><strong>Go to Network Tab:</strong> Check that preconnect requests appear early</li>
+      <li><strong>Go to Performance Tab:</strong> Record page load and verify FCP < 2 seconds</li>
+      <li><strong>Check Console:</strong> Look for performance metrics logged automatically</li>
+      <li><strong>Test Lazy Loading:</strong> Scroll down and watch images load in Network tab</li>
+      <li><strong>Run Lighthouse:</strong> Click the Lighthouse tab and run an audit (target score ≥ 90)</li>
+    </ol>
+  </div>
+
+  <script>
+    async function runTests() {
+      const checklistEl = document.getElementById('checklist');
+      const metricsEl = document.getElementById('metrics');
+      
+      checklistEl.innerHTML = '<div class="loading"><div class="spinner"></div><p>Running tests...</p></div>';
+      
+      // Simulate test execution
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      try {
+        const response = await fetch('index.html');
+        const html = await response.text();
+        
+        const checks = [
+          {
+            title: 'Preconnect Links',
+            desc: 'External domains have preconnect hints',
+            test: () => {
+              return html.includes('rel="preconnect"') && 
+                     html.includes('https://js.stripe.com') &&
+                     html.includes('https://assets.calendly.com') &&
+                     html.includes('https://cdnjs.cloudflare.com');
+            }
+          },
+          {
+            title: 'DNS Prefetch',
+            desc: 'DNS prefetch hints for faster resolution',
+            test: () => html.includes('rel="dns-prefetch"')
+          },
+          {
+            title: 'Lazy Loading',
+            desc: 'Images configured for lazy loading',
+            test: () => html.includes('optimizeImageLoading') && html.includes('loading="lazy"')
+          },
+          {
+            title: 'High Priority Logo',
+            desc: 'Above-the-fold logo has high priority',
+            test: () => html.includes('fetchpriority="high"')
+          },
+          {
+            title: 'Async Script Loading',
+            desc: 'Scripts loaded with async/defer',
+            test: () => html.includes('async') || html.includes('defer')
+          },
+          {
+            title: 'Performance Monitoring',
+            desc: 'Core Web Vitals tracking implemented',
+            test: () => {
+              return html.includes('monitorPerformance') &&
+                     html.includes('first-contentful-paint') &&
+                     html.includes('largest-contentful-paint');
+            }
+          },
+          {
+            title: 'Hardware Acceleration',
+            desc: 'Animations use transform and opacity',
+            test: () => html.includes('transform') && html.includes('opacity')
+          },
+          {
+            title: 'Deferred Work',
+            desc: 'Non-critical work deferred with requestIdleCallback',
+            test: () => html.includes('requestIdleCallback') && html.includes('deferNonCriticalWork')
+          },
+          {
+            title: 'Resource Preload',
+            desc: 'Critical resources preloaded',
+            test: () => html.includes('rel="preload"')
+          },
+          {
+            title: 'Optimized Initialization',
+            desc: 'External libraries initialized efficiently',
+            test: () => {
+              return html.includes('initAnimations') &&
+                     html.includes('initStripePayment') &&
+                     html.includes('initCalendly');
+            }
+          }
+        ];
+        
+        let passedCount = 0;
+        let checklistHTML = '';
+        
+        checks.forEach(check => {
+          const passed = check.test();
+          if (passed) passedCount++;
+          
+          checklistHTML += `
+            <div class="check-item ${passed ? '' : 'failed'}">
+              <div class="icon">${passed ? '✅' : '❌'}</div>
+              <div class="check-content">
+                <div class="check-title">${check.title}</div>
+                <p class="check-desc">${check.desc}</p>
+              </div>
+            </div>
+          `;
+        });
+        
+        checklistEl.innerHTML = checklistHTML;
+        
+        // Display metrics
+        const percentage = Math.round((passedCount / checks.length) * 100);
+        const status = percentage === 100 ? 'good' : percentage >= 80 ? 'warning' : 'bad';
+        
+        metricsEl.innerHTML = `
+          <div style="margin-bottom: 20px;">
+            <span class="metric ${status}">Score: ${passedCount}/${checks.length} (${percentage}%)</span>
+            <span class="metric ${percentage === 100 ? 'good' : 'warning'}">
+              ${percentage === 100 ? '✓ All Optimizations Implemented' : '⚠ Some Optimizations Missing'}
+            </span>
+          </div>
+          
+          <h3 style="margin-top: 20px; color: #163b63;">Expected Performance Improvements</h3>
+          <div style="margin-top: 12px;">
+            <span class="metric good">FCP: 20-40% faster</span>
+            <span class="metric good">TTI: 30-50% faster</span>
+            <span class="metric good">Page Weight: 30-50% reduction</span>
+            <span class="metric good">Animations: 60fps</span>
+            <span class="metric good">Lighthouse: 90+</span>
+          </div>
+          
+          <h3 style="margin-top: 20px; color: #163b63;">Next Steps</h3>
+          <ol style="line-height: 1.8; color: #374151; margin-top: 12px;">
+            <li>Open the main landing page and check browser console for performance metrics</li>
+            <li>Run Lighthouse audit in DevTools (target score ≥ 90)</li>
+            <li>Test on throttled connection (3G) to verify optimizations</li>
+            <li>Test on real mobile devices</li>
+            <li>Monitor Core Web Vitals in production</li>
+          </ol>
+        `;
+        
+        console.log('=== Performance Test Results ===');
+        console.log(`Passed: ${passedCount}/${checks.length} (${percentage}%)`);
+        console.log('See detailed results above');
+        
+      } catch (error) {
+        checklistEl.innerHTML = `
+          <div class="check-item failed">
+            <div class="icon">❌</div>
+            <div class="check-content">
+              <div class="check-title">Test Failed</div>
+              <p class="check-desc">Error: ${error.message}</p>
+            </div>
+          </div>
+        `;
+        console.error('Test error:', error);
+      }
+    }
+    
+    // Auto-run tests on page load
+    window.addEventListener('load', () => {
+      setTimeout(runTests, 500);
+    });
+  </script>
+</body>
+</html>

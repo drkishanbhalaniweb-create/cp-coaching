@@ -1,220 +1,377 @@
-# C&P Exam Coaching Landing Page
+# Claim Readiness Diagnostic
 
-A professional landing page with integrated Stripe payment processing and Calendly scheduling for C&P Exam Coaching sessions.
+An interactive decision-support tool that helps veterans assess whether their VA disability claim is ready to file. This diagnostic provides objective, transparent recommendations based on five key assessment areas.
 
-## 🎯 Features
+## Overview
 
-- **Stripe Integration**: Secure $150 payment processing
-- **Calendly Integration**: Automatic scheduling after successful payment
-- **Serverless Architecture**: Ready for Vercel deployment
-- **Responsive Design**: Works on all devices
-- **Professional UI**: Veteran-focused design
+The Claim Readiness Diagnostic is a trust-first educational tool that guides veterans through a five-question assessment to evaluate their VA claim readiness. It provides objective recommendations without aggressive sales tactics, showing users exactly why they received their recommendation through a transparent breakdown.
 
-## 🚀 Quick Start
+**Key Features:**
+- 🎯 Five-question assessment covering critical claim readiness factors
+- 📊 Objective scoring system (0-10 scale)
+- 🔍 Transparent recommendation breakdown
+- 📅 Integrated Calendly booking for Claim Readiness Reviews
+- 💳 Stripe payment integration for paid services
+- ♿ WCAG AA accessible
+- 📱 Fully responsive (mobile, tablet, desktop)
+- ⚡ Fast performance (vanilla JavaScript, no frameworks)
+
+## Quick Start
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
-- A Stripe account ([Sign up here](https://dashboard.stripe.com/register))
-- A Calendly account ([Sign up here](https://calendly.com/signup))
-- A Vercel account for deployment ([Sign up here](https://vercel.com/signup))
+- Node.js 14+ (for development and testing)
+- npm or yarn
+- Vercel account (for deployment)
+- Stripe account (for payments)
+- Calendly account (for bookings)
 
-### Setup Instructions
+### Installation
 
-#### 1. Install Dependencies
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd claim-readiness-diagnostic
+```
 
+2. Install dependencies:
 ```bash
 npm install
 ```
 
-#### 2. Configure Stripe
-
-1. Go to your [Stripe Dashboard](https://dashboard.stripe.com/test/apikeys)
-2. Get your **Publishable Key** (starts with `pk_test_`)
-3. Get your **Secret Key** (starts with `sk_test_`)
-4. Create a product for "$150 C&P Exam Coaching Session"
-5. Get the **Price ID** (starts with `price_`)
-
-#### 3. Configure Calendly
-
-1. Go to your [Calendly Event Types](https://calendly.com/event_types/user/me)
-2. Create or select an event type for "C&P Exam Coaching"
-3. Copy the scheduling link (e.g., `https://calendly.com/your-username/cp-exam-coaching`)
-
-#### 4. Run Setup Script
-
+3. Create environment file:
 ```bash
-node setup.js
+cp .env.example .env
 ```
 
-This interactive script will:
-- Prompt you for your Stripe and Calendly credentials
-- Create a `.env` file with your configuration
-- Update `index.html` with your Stripe publishable key
-- Update `success.html` with your Calendly link
+4. Configure environment variables in `.env`:
+```env
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_PRICE_ID=price_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+CALENDLY_LINK=https://calendly.com/your-link/claim-readiness-review
+DOMAIN=http://localhost:3001
+```
 
-**OR** you can manually configure:
+### Development
 
-1. Copy `.env.example` to `.env`:
-   ```bash
-   copy .env.example .env
-   ```
-
-2. Edit `.env` and add your credentials:
-   ```
-   STRIPE_SECRET_KEY=sk_test_your_key_here
-   STRIPE_PUBLISHABLE_KEY=pk_test_your_key_here
-   STRIPE_PRICE_ID=price_your_price_id_here
-   CALENDLY_LINK=https://calendly.com/your-username/cp-exam-coaching
-   DOMAIN=http://localhost:3000
-   ```
-
-3. Update `index.html` line 1224:
-   ```javascript
-   const STRIPE_PUBLISHABLE_KEY = 'pk_test_YOUR_ACTUAL_KEY';
-   ```
-
-4. Update `success.html` line 177:
-   ```javascript
-   const calendlyUrl = 'https://calendly.com/your-username/cp-exam-coaching';
-   ```
-
-#### 5. Test Locally
-
+Start the local development server:
 ```bash
 npm run dev
 ```
 
-Visit `http://localhost:3000` to test the payment flow.
+The diagnostic will be available at `http://localhost:3001`
 
-**Test Card Numbers:**
-- Success: `4242 4242 4242 4242`
-- Any future expiry date and any 3-digit CVC
+### Testing
 
-## 📦 Deployment to Vercel
-
-### Option 1: Using Vercel CLI
-
-1. Install Vercel CLI:
-   ```bash
-   npm install -g vercel
-   ```
-
-2. Login to Vercel:
-   ```bash
-   vercel login
-   ```
-
-3. Deploy:
-   ```bash
-   npm run deploy
-   ```
-
-4. Add environment variables in Vercel Dashboard:
-   - Go to your project settings
-   - Navigate to "Environment Variables"
-   - Add all variables from your `.env` file
-   - Update `DOMAIN` to your production URL
-
-### Option 2: Using Vercel Dashboard
-
-1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
-2. Click "Add New Project"
-3. Import your Git repository
-4. Add environment variables:
-   - `STRIPE_SECRET_KEY`
-   - `STRIPE_PUBLISHABLE_KEY`
-   - `STRIPE_PRICE_ID`
-   - `CALENDLY_LINK`
-   - `DOMAIN` (your production URL)
-5. Deploy!
-
-## 🔧 File Structure
-
-```
-cp-exam-coaching/
-├── api/
-│   └── create-checkout-session.js  # Serverless function for Stripe
-├── index.html                       # Main landing page
-├── success.html                     # Post-payment success page with Calendly
-├── package.json                     # Dependencies
-├── .env.example                     # Environment variables template
-├── .env                            # Your credentials (gitignored)
-├── setup.js                        # Interactive setup script
-└── README.md                       # This file
+Run all tests:
+```bash
+npm test
 ```
 
-## 💳 Payment Flow
+Run tests in watch mode:
+```bash
+npm run test:watch
+```
 
-1. **User clicks "Schedule My C&P Coaching Session – $150"**
-2. **JavaScript calls `/api/create-checkout-session`**
-3. **Serverless function creates Stripe Checkout session**
-4. **User is redirected to Stripe Checkout page**
-5. **User enters payment information**
-6. **After successful payment, user is redirected to `success.html`**
-7. **Success page displays Calendly widget for scheduling**
+Run property-based tests:
+```bash
+npm run test:pbt
+```
 
-## 🔐 Security Notes
+### Deployment
 
-- Never commit your `.env` file to version control
-- Use test keys during development
-- Switch to live keys only in production
-- Keep your Stripe Secret Key secure
-- Use environment variables in Vercel for production
+Deploy to Vercel:
+```bash
+vercel --prod
+```
 
-## 📝 Customization
+Or use the Vercel GitHub integration for automatic deployments.
 
-### Update Pricing
+## Architecture
 
-1. Change the price in Stripe Dashboard
-2. Update the new Price ID in `.env`
-3. Update display prices in `index.html` (search for "$150")
+### Frontend Components
 
-### Update Calendly Event
+The diagnostic is built with vanilla JavaScript using a modular architecture:
 
-1. Change the event type in Calendly
-2. Update the link in `.env`
-3. Re-run `node setup.js` or manually update `success.html`
+- **DiagnosticController**: Central state management and flow control
+- **QuestionRenderer**: UI rendering for all screens
+- **ScoringEngine**: Answer scoring and calculation logic
+- **RecommendationEngine**: Score-to-recommendation mapping
+- **CalendlyIntegration**: Booking widget integration
+- **DataLogger**: Analytics and data persistence
 
-### Styling
+### Backend API
 
-All styles are in the `<style>` section of `index.html`. Modify CSS variables at the top:
+Serverless functions deployed on Vercel:
 
-```css
-:root {
-  --primary: #163b63;
-  --accent: #22c55e;
-  /* ... */
+- **POST /api/log-diagnostic.js**: Logs diagnostic completion data
+- **POST /api/create-checkout-session.js**: Creates Stripe checkout sessions
+- **POST /api/webhook.js**: Handles Stripe webhook events
+
+### Data Flow
+
+```
+User → Diagnostic UI → DiagnosticController → ScoringEngine → RecommendationEngine
+                                ↓
+                         localStorage (session data)
+                                ↓
+                         DataLogger → /api/log-diagnostic
+                                ↓
+                         CalendlyIntegration → Booking
+                                ↓
+                         StripeIntegration → Payment
+```
+
+## Configuration
+
+### Question Configuration
+
+Questions are defined in `diagnostic-config.js`:
+
+```javascript
+const QUESTIONS = [
+  {
+    id: 'service_connection',
+    number: 1,
+    title: 'Service connection clearly documented?',
+    helper: 'Medical records, nexus letters, or documented in-service events linking the condition.',
+    options: [
+      { text: 'No', points: 2 },
+      { text: 'Somewhat', points: 1 },
+      { text: 'Yes', points: 0 }
+    ]
+  },
+  // ... additional questions
+];
+```
+
+### Recommendation Configuration
+
+Recommendations are defined in `diagnostic-config.js`:
+
+```javascript
+const RECOMMENDATIONS = {
+  FULLY_READY: {
+    scoreRange: [0, 0],
+    message: 'Your claim is FULLY READY. No Claim Readiness Review is needed.',
+    color: '#10b981',
+    icon: '✅',
+    ctaText: 'Book review for peace of mind',
+    ctaOptional: true
+  },
+  // ... additional recommendations
+};
+```
+
+See [docs/CONFIGURATION.md](docs/CONFIGURATION.md) for detailed configuration options.
+
+## API Documentation
+
+### POST /api/log-diagnostic.js
+
+Logs diagnostic completion data for analytics.
+
+**Request:**
+```json
+{
+  "timestamp": "2025-12-18T10:30:00.000Z",
+  "answers": {
+    "service_connection": 2,
+    "denial_handling": 1,
+    "pathway": 2,
+    "severity": 1,
+    "secondaries": 2
+  },
+  "score": 8,
+  "recommendation": "REVIEW_STRONGLY_RECOMMENDED"
 }
 ```
 
-## 🐛 Troubleshooting
+**Response:**
+```json
+{
+  "success": true,
+  "id": "diag_abc123xyz"
+}
+```
 
-### Payment button doesn't work
+See [docs/API.md](docs/API.md) for complete API documentation.
 
-- Check browser console for errors
-- Verify Stripe publishable key is correct in `index.html`
-- Ensure `/api/create-checkout-session.js` is accessible
+## Data Storage
 
-### Calendly doesn't load
+### localStorage Schema
 
-- Verify Calendly link is correct in `success.html`
-- Check browser console for errors
-- Ensure Calendly event is active and public
+Session data is stored in browser localStorage:
 
-### Deployment issues
+```javascript
+{
+  sessionId: "uuid-v4",
+  startTime: "2025-12-18T10:30:00.000Z",
+  endTime: "2025-12-18T10:32:00.000Z",
+  currentState: "recommendation",
+  answers: {
+    service_connection: { text: "No", points: 2 },
+    denial_handling: { text: "Partially", points: 1 },
+    // ... additional answers
+  },
+  score: 8,
+  recommendation: "REVIEW_STRONGLY_RECOMMENDED"
+}
+```
 
-- Verify all environment variables are set in Vercel
-- Check Vercel function logs for errors
-- Ensure `DOMAIN` environment variable matches your production URL
+See [docs/DATA_SCHEMA.md](docs/DATA_SCHEMA.md) for complete schema documentation.
 
-## 📞 Support
+## Testing
 
-For issues with:
-- **Stripe**: [Stripe Support](https://support.stripe.com/)
-- **Calendly**: [Calendly Help Center](https://help.calendly.com/)
-- **Vercel**: [Vercel Support](https://vercel.com/support)
+### Unit Tests
 
-## 📄 License
+Unit tests verify specific functionality:
 
-This project is for Military Disability Nexus. All rights reserved.
+```bash
+npm test
+```
+
+Tests are located in `__tests__/` directory and cover:
+- Component logic (ScoringEngine, RecommendationEngine, etc.)
+- UI rendering (QuestionRenderer)
+- Integration points (CalendlyIntegration, StripeIntegration)
+- API endpoints
+
+### Property-Based Tests
+
+Property-based tests verify universal correctness properties:
+
+```bash
+npm run test:pbt
+```
+
+Properties tested include:
+- Scoring consistency across all answer combinations
+- Recommendation accuracy for all score ranges
+- UI element presence and behavior
+- Accessibility compliance
+
+### Manual Testing
+
+Visual and accessibility testing:
+- Test files in root directory (`test-*.html`)
+- Verification scripts (`verify-*.js`)
+- Cross-browser testing checklist
+
+## Accessibility
+
+The diagnostic is WCAG AA compliant:
+
+- ✅ ARIA labels on all interactive elements
+- ✅ Full keyboard navigation support
+- ✅ Screen reader compatible
+- ✅ Color contrast ratios meet WCAG standards
+- ✅ Focus indicators visible
+- ✅ Respects prefers-reduced-motion
+
+Test accessibility:
+```bash
+node verify-accessibility.js
+```
+
+## Performance
+
+Performance targets:
+- First Contentful Paint < 1.5s
+- Largest Contentful Paint < 2.5s
+- Cumulative Layout Shift < 0.1
+- Lighthouse score ≥ 90
+
+Test performance:
+```bash
+node verify-performance.js
+```
+
+## Browser Support
+
+- Chrome/Edge (last 2 versions)
+- Firefox (last 2 versions)
+- Safari (last 2 versions)
+- Mobile Safari (iOS 13+)
+- Chrome Mobile (Android 8+)
+
+## Deployment
+
+### Vercel Deployment
+
+1. Install Vercel CLI:
+```bash
+npm install -g vercel
+```
+
+2. Deploy:
+```bash
+vercel --prod
+```
+
+3. Configure environment variables in Vercel dashboard
+
+4. Verify deployment:
+```bash
+node verify-deployment.js
+```
+
+See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for detailed deployment instructions.
+
+## Project Structure
+
+```
+.
+├── api/                          # Serverless functions
+│   ├── create-checkout-session.js
+│   ├── log-diagnostic.js
+│   └── webhook.js
+├── __tests__/                    # Test files
+│   ├── ScoringEngine.test.js
+│   ├── RecommendationEngine.test.js
+│   └── ...
+├── data/                         # Data storage
+│   └── diagnostics.json
+├── docs/                         # Documentation
+│   ├── API.md
+│   ├── CONFIGURATION.md
+│   └── DATA_SCHEMA.md
+├── CalendlyIntegration.js        # Calendly booking integration
+├── DataLogger.js                 # Analytics logging
+├── DiagnosticController.js       # State management
+├── QuestionRenderer.js           # UI rendering
+├── RecommendationEngine.js       # Recommendation logic
+├── ScoringEngine.js              # Scoring logic
+├── StripeIntegration.js          # Payment integration
+├── diagnostic-config.js          # Configuration
+├── diagnostic-main.js            # Main entry point
+├── diagnostic.html               # Diagnostic page
+├── index.html                    # Landing page
+├── package.json                  # Dependencies
+├── vercel.json                   # Vercel configuration
+└── README.md                     # This file
+```
+
+## Contributing
+
+1. Create a feature branch
+2. Make your changes
+3. Run tests: `npm test`
+4. Submit a pull request
+
+## License
+
+Proprietary - Military Disability Nexus
+
+## Support
+
+For questions or issues:
+- Email: support@militarydisabilitynexus.com
+- Documentation: See `docs/` directory
+- Deployment issues: See `docs/DEPLOYMENT.md`
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for version history.

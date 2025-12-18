@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Claim Readiness Diagnostic | Military Disability Nexus</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Answer five quick questions to see if your VA claim is ready to file — or if a review would help. Educational, veteran-first, no email required." />
+  
+
+  
+  <!-- Preconnect to external domains for better performance -->
+  <link rel="preconnect" href="https://js.stripe.com">
+  <link rel="preconnect" href="https://js.stripe.com" crossorigin>
+  <link rel="preconnect" href="https://assets.calendly.com">
+  <link rel="preconnect" href="https://assets.calendly.com" crossorigin>
+  <link rel="preconnect" href="https://calendly.com">
+  
+  <style>
+    :root {
+      /* ============================================
+         MILITARY DISABILITY NEXUS BRAND COLORS
+         ============================================ */
+      
+      /* Primary Navy Colors */
+      --navy-primary: #163b63;
+      --navy-dark: #0f243d;
+      --navy-light: #1f4f85;
+      
+      /* Accent Colors */
+      --blue-accent: #3b82f6;
+      --red-cta: #dc2626;
+      
+      /* Recommendation Colors */
+      --green-ready: #10b981;
+      --blue-optional: #3b82f6;
+      --yellow-beneficial: #f59e0b;
+      --red-recommended: #dc2626;
+      
+      /* Neutral Colors */
+      --white: #ffffff;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-600: #4b5563;
+      --gray-900: #111827;
+      
+      /* ============================================
+         SPACING SYSTEM
+         ============================================ */
+      --spacing-xs: 8px;
+      --spacing-sm: 12px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --spacing-2xl: 48px;
+      
+      /* ============================================
+         BORDER RADIUS
+         ============================================ */
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      
+      /* ============================================
+         SHADOWS
+         ============================================ */
+      --shadow-soft: 0 10px 30px rgba(15, 36, 61, 0.12);
+      --shadow-medium: 0 15px 40px rgba(15, 36, 61, 0.18);
+      --shadow-hard: 0 20px 50px rgba(15, 36, 61, 0.25);
+      
+      /* ============================================
+         GLASSMORPHISM EFFECTS
+         ============================================ */
+      --glass-bg: rgba(255, 255, 255, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.3);
+      --glass-blur: blur(10px);
+      
+      /* ============================================
+         TYPOGRAPHY
+         ============================================ */
+      --font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --font-size-sm: 14px;
+      --font-size-base: 16px;
+      --font-size-lg: 18px;
+      --font-size-xl: 24px;
+      --font-size-2xl: 32px;
+      --font-size-3xl: 40px;
+      
+      /* ============================================
+         TRANSITIONS
+         ============================================ */
+      --transition-fast: 150ms ease;
+      --transition-normal: 300ms ease;
+      --transition-slow: 500ms ease;
+      
+      /* ============================================
+         Z-INDEX LAYERS
+         ============================================ */
+      --z-base: 1;
+      --z-card: 10;
+      --z-modal: 100;
+      --z-overlay: 1000;
+    }
+    
+    /* ============================================
+       REDUCED MOTION SUPPORT
+       ============================================ */
+    @media (prefers-reduced-motion: reduce) {
+      :root {
+        --transition-fast: 0.01s;
+        --transition-normal: 0.01s;
+        --transition-slow: 0.01s;
+      }
+      
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    
+    /* ============================================
+       ACCESSIBILITY - SKIP LINK
+       ============================================ */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--navy-primary);
+      color: var(--white);
+      padding: var(--spacing-sm) var(--spacing-md);
+      text-decoration: none;
+      z-index: var(--z-overlay);
+      font-weight: 600;
+      border-radius: 0 0 var(--radius-md) 0;
+    }
+    
+    .skip-link:focus {
+      top: 0;
+      outline: 3px solid var(--blue-accent);
+      outline-offset: 2px;
+    }
+    
+    /* ============================================
+       BASE STYLES
+       ============================================ */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: var(--font-body);
+      color: var(--gray-900);
+      /* Navy/deep blue gradient background with subtle variation */
+      background: linear-gradient(135deg, 
+        #0f243d 0%, 
+        #163b63 25%, 
+        #1f4f85 50%, 
+        #163b63 75%, 
+        #0f243d 100%);
+      background-attachment: fixed;
+      line-height: 1.6;
+      min-height: 100vh;
+      position: relative;
+    }
+    
+    /* Overlay for softer background effect */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 30% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 80%, rgba(31, 79, 133, 0.15) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    /* ============================================
+       DIAGNOSTIC CONTAINER
+       ============================================ */
+    .diagnostic-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: var(--spacing-xl) var(--spacing-md);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      z-index: var(--z-base);
+    }
+    
+    /* ============================================
+       SCREEN CONTAINERS
+       ============================================ */
+    .screen {
+      display: none;
+      opacity: 0;
+      transition: opacity var(--transition-normal);
+    }
+    
+    .screen.active {
+      display: block;
+      opacity: 1;
+    }
+    
+    /* ============================================
+       ANIMATION CLASSES
+       ============================================ */
+    .fade-out {
+      opacity: 0 !important;
+      transition: opacity 400ms ease;
+    }
+    
+    .fade-in {
+      opacity: 1 !important;
+      transition: opacity 400ms ease;
+    }
+    
+    .slide-out {
+      transform: translateX(-30px);
+      transition: transform 400ms ease, opacity 400ms ease;
+    }
+    
+    .slide-in {
+      transform: translateX(0);
+      transition: transform 400ms ease, opacity 400ms ease;
+    }
+    
+    /* Answer selection visual feedback animation */
+    @keyframes answer-pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    
+    .answer-selected {
+      animation: answer-pulse 300ms ease;
+    }
+    
+    /* ============================================
+       INTRO SCREEN
+       ============================================ */
+    .intro-screen {
+      text-align: center;
+      /* Glassmorphism container for intro */
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-2xl);
+      box-shadow: var(--shadow-medium);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+    
+    .intro-title {
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
+      color: var(--navy-dark);
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .intro-subtitle {
+      font-size: var(--font-size-lg);
+      color: var(--gray-600);
+      margin-bottom: var(--spacing-2xl);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.7;
+    }
+    
+    .trust-notes {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-2xl);
+      list-style: none;
+      padding: 0;
+    }
+    
+    .trust-note {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      font-size: var(--font-size-sm);
+      color: var(--navy-dark);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      /* Glassmorphism effect for trust notes */
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 4px 12px rgba(15, 36, 61, 0.08);
+    }
+    
+    .trust-note-icon {
+      font-size: var(--font-size-lg);
+    }
+    
+    /* ============================================
+       QUESTION SCREEN
+       ============================================ */
+    .question-screen {
+      max-width: 800px;
+      margin: 0 auto;
+      /* Glassmorphism container for questions */
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-2xl);
+      box-shadow: var(--shadow-medium);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+    
+    .progress-indicator {
+      text-align: center;
+      font-size: var(--font-size-sm);
+      color: var(--navy-primary);
+      margin-bottom: var(--spacing-md);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    
+    .progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: var(--radius-xl);
+      margin-bottom: var(--spacing-2xl);
+      overflow: hidden;
+      box-shadow: inset 0 2px 4px rgba(15, 36, 61, 0.1);
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--navy-primary), var(--blue-accent));
+      border-radius: var(--radius-xl);
+      transition: transform var(--transition-normal);
+      transform-origin: left center;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    }
+    
+    .question-title {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--navy-dark);
+      margin-bottom: var(--spacing-md);
+      text-align: center;
+      line-height: 1.3;
+    }
+    
+    .question-helper {
+      font-size: var(--font-size-base);
+      color: var(--gray-600);
+      text-align: center;
+      margin-bottom: var(--spacing-2xl);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+    }
+    
+    .answer-options {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    /* ============================================
+       ANSWER CARDS (GLASSMORPHISM)
+       ============================================ */
+    .answer-card {
+      /* Enhanced glassmorphism effect */
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-lg) var(--spacing-xl);
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      box-shadow: 0 8px 24px rgba(15, 36, 61, 0.12);
+      text-align: center;
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      color: var(--navy-dark);
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Subtle shine effect on hover */
+    .answer-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.5s ease;
+    }
+    
+    .answer-card:hover::before {
+      transform: translateX(100%);
+    }
+    
+    .answer-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 32px rgba(15, 36, 61, 0.18);
+      border-color: rgba(59, 130, 246, 0.5);
+      background: rgba(255, 255, 255, 0.9);
+    }
+    
+    .answer-card:focus {
+      outline: 3px solid var(--blue-accent);
+      outline-offset: 3px;
+    }
+    
+    .answer-card.selected {
+      background: linear-gradient(135deg, var(--navy-primary), var(--navy-light));
+      color: var(--white);
+      border-color: var(--navy-primary);
+      transform: scale(1.02);
+      box-shadow: 0 12px 32px rgba(22, 59, 99, 0.3);
+    }
+    
+    /* ============================================
+       RECOMMENDATION SCREEN
+       ============================================ */
+    .recommendation-screen {
+      text-align: center;
+      /* Glassmorphism container for recommendation */
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-2xl);
+      box-shadow: var(--shadow-medium);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+    
+    .recommendation-icon {
+      font-size: 64px;
+      margin-bottom: var(--spacing-lg);
+      filter: drop-shadow(0 4px 8px rgba(15, 36, 61, 0.15));
+    }
+    
+    .recommendation-message {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      margin-bottom: var(--spacing-2xl);
+      line-height: 1.4;
+      color: var(--navy-dark);
+    }
+    
+    /* ============================================
+       TRANSPARENCY LAYER
+       ============================================ */
+    .transparency-layer {
+      /* Glassmorphism effect for transparency layer */
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-2xl);
+      margin: var(--spacing-2xl) 0;
+      box-shadow: 0 8px 24px rgba(15, 36, 61, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+    
+    .transparency-title {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--navy-dark);
+      margin-bottom: var(--spacing-xl);
+      text-align: center;
+    }
+    
+    .assessment-areas {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+      list-style: none;
+      padding: 0;
+    }
+    
+    .assessment-area {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md) var(--spacing-lg);
+      /* Subtle glassmorphism for assessment items */
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 4px 12px rgba(15, 36, 61, 0.08);
+      transition: all var(--transition-fast);
+    }
+    
+    .assessment-area:hover {
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 6px 16px rgba(15, 36, 61, 0.12);
+    }
+    
+    .assessment-icon {
+      font-size: var(--font-size-xl);
+      flex-shrink: 0;
+      filter: drop-shadow(0 2px 4px rgba(15, 36, 61, 0.1));
+    }
+    
+    .assessment-label {
+      font-size: var(--font-size-base);
+      color: var(--navy-dark);
+      font-weight: 600;
+    }
+    
+    .assessment-status {
+      margin-left: auto;
+      font-size: var(--font-size-sm);
+      color: var(--gray-600);
+      font-weight: 500;
+    }
+    
+    /* ============================================
+       BUTTONS
+       ============================================ */
+    .btn {
+      padding: var(--spacing-md) var(--spacing-xl);
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      border: none;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-xs);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--navy-primary), var(--navy-light));
+      color: var(--white);
+      box-shadow: 0 8px 24px rgba(22, 59, 99, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.5s ease;
+    }
+    
+    .btn-primary:hover::before {
+      transform: translateX(100%);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(22, 59, 99, 0.35);
+    }
+    
+    .btn-primary:focus {
+      outline: 3px solid var(--blue-accent);
+      outline-offset: 3px;
+    }
+    
+    /* Red CTA button - only for high-risk states and primary CTAs */
+    .btn-cta {
+      background: linear-gradient(135deg, var(--red-cta), #b91c1c);
+      color: var(--white);
+      box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3);
+      font-size: var(--font-size-lg);
+      padding: var(--spacing-lg) var(--spacing-2xl);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .btn-cta::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.5s ease;
+    }
+    
+    .btn-cta:hover::before {
+      transform: translateX(100%);
+    }
+    
+    .btn-cta:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 32px rgba(220, 38, 38, 0.4);
+    }
+    
+    .btn-cta:focus {
+      outline: 3px solid var(--red-cta);
+      outline-offset: 3px;
+    }
+    
+    /* ============================================
+       RESPONSIVE DESIGN - MOBILE FIRST
+       ============================================ */
+    
+    /* Mobile devices (≤768px) */
+    @media (max-width: 768px) {
+      .diagnostic-container {
+        padding: var(--spacing-lg) var(--spacing-md);
+        max-width: 100%;
+      }
+      
+      .intro-screen,
+      .question-screen,
+      .recommendation-screen {
+        padding: var(--spacing-xl) var(--spacing-lg);
+      }
+      
+      .intro-title {
+        font-size: var(--font-size-2xl);
+      }
+      
+      .intro-subtitle {
+        font-size: var(--font-size-base);
+        padding: 0;
+      }
+      
+      .question-title {
+        font-size: var(--font-size-xl);
+      }
+      
+      .question-helper {
+        font-size: var(--font-size-sm);
+        padding: 0;
+      }
+      
+      /* Ensure touch targets are minimum 44x44px */
+      .answer-card {
+        font-size: var(--font-size-base);
+        padding: var(--spacing-md) var(--spacing-lg);
+        min-height: 44px;
+        min-width: 44px;
+      }
+      
+      .btn {
+        min-height: 44px;
+        min-width: 44px;
+        padding: var(--spacing-md) var(--spacing-lg);
+      }
+      
+      .btn-cta {
+        min-height: 44px;
+        padding: var(--spacing-md) var(--spacing-xl);
+        font-size: var(--font-size-base);
+      }
+      
+      .trust-notes {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-sm);
+      }
+      
+      .trust-note {
+        min-height: 44px;
+        padding: var(--spacing-sm) var(--spacing-md);
+      }
+      
+      .recommendation-message {
+        font-size: var(--font-size-xl);
+      }
+      
+      .transparency-layer {
+        padding: var(--spacing-xl) var(--spacing-lg);
+        margin: var(--spacing-xl) 0;
+      }
+      
+      .transparency-title {
+        font-size: var(--font-size-lg);
+      }
+      
+      .assessment-area {
+        padding: var(--spacing-sm) var(--spacing-md);
+        flex-wrap: wrap;
+      }
+      
+      .answer-options {
+        max-width: 100%;
+        gap: var(--spacing-md);
+      }
+    }
+    
+    /* Extra small mobile devices (≤480px, including 320px) */
+    @media (max-width: 480px) {
+      .diagnostic-container {
+        padding: var(--spacing-md) var(--spacing-sm);
+      }
+      
+      .intro-screen,
+      .question-screen,
+      .recommendation-screen {
+        padding: var(--spacing-lg) var(--spacing-md);
+      }
+      
+      .intro-title {
+        font-size: var(--font-size-xl);
+      }
+      
+      .intro-subtitle {
+        font-size: var(--font-size-sm);
+      }
+      
+      .question-title {
+        font-size: var(--font-size-lg);
+      }
+      
+      .question-helper {
+        font-size: var(--font-size-sm);
+      }
+      
+      .transparency-layer {
+        padding: var(--spacing-lg) var(--spacing-md);
+      }
+      
+      .recommendation-icon {
+        font-size: 48px;
+      }
+      
+      .recommendation-message {
+        font-size: var(--font-size-lg);
+      }
+      
+      .assessment-area {
+        font-size: var(--font-size-sm);
+      }
+      
+      .btn-cta {
+        width: 100%;
+        font-size: var(--font-size-base);
+      }
+    }
+    
+    /* Tablet devices (769px - 1024px) */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .diagnostic-container {
+        max-width: 720px;
+        padding: var(--spacing-xl) var(--spacing-lg);
+      }
+      
+      .intro-title {
+        font-size: var(--font-size-3xl);
+      }
+      
+      .question-title {
+        font-size: var(--font-size-2xl);
+      }
+      
+      .answer-options {
+        max-width: 600px;
+      }
+      
+      .transparency-layer {
+        padding: var(--spacing-xl);
+      }
+    }
+    
+    /* Desktop devices (>1024px) */
+    @media (min-width: 1025px) {
+      .diagnostic-container {
+        max-width: 800px;
+        padding: var(--spacing-2xl) var(--spacing-xl);
+      }
+      
+      .intro-title {
+        font-size: var(--font-size-3xl);
+      }
+      
+      .question-title {
+        font-size: var(--font-size-2xl);
+      }
+      
+      .answer-options {
+        max-width: 600px;
+      }
+      
+      .transparency-layer {
+        padding: var(--spacing-2xl);
+      }
+    }
+    
+    /* Large desktop devices (>1920px) */
+    @media (min-width: 1921px) {
+      .diagnostic-container {
+        max-width: 1000px;
+      }
+      
+      .intro-title {
+        font-size: 48px;
+      }
+      
+      .question-title {
+        font-size: var(--font-size-3xl);
+      }
+    }
+    
+    /* Ensure no horizontal scrolling at any viewport width */
+    @media (max-width: 320px) {
+      .diagnostic-container {
+        padding: var(--spacing-sm);
+        min-width: 0;
+      }
+      
+      .intro-title,
+      .question-title,
+      .recommendation-message {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+      }
+      
+      .answer-card {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: var(--font-size-sm);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Skip to main content link for keyboard users -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  
+  <main id="main-content" class="diagnostic-container" role="main" aria-label="Claim Readiness Diagnostic">
+    <!-- INTRO SCREEN -->
+    <div id="intro-screen" class="screen active intro-screen" role="region" aria-labelledby="intro-title">
+      <h1 id="intro-title" class="intro-title">Claim Readiness Diagnostic</h1>
+      <p class="intro-subtitle">
+        Answer five quick questions to see if your VA claim is ready to file — or if a review would help
+      </p>
+      
+      <ul class="trust-notes" role="list" aria-label="Diagnostic features">
+        <li class="trust-note">
+          <span class="trust-note-icon" aria-hidden="true">⏱️</span>
+          <span>Takes ~2 minutes</span>
+        </li>
+        <li class="trust-note">
+          <span class="trust-note-icon" aria-hidden="true">🔒</span>
+          <span>No email required</span>
+        </li>
+        <li class="trust-note">
+          <span class="trust-note-icon" aria-hidden="true">🎓</span>
+          <span>Educational & veteran-first</span>
+        </li>
+        <li class="trust-note">
+          <span class="trust-note-icon" aria-hidden="true">🏛️</span>
+          <span>Not affiliated with the VA</span>
+        </li>
+      </ul>
+      
+      <button id="start-diagnostic-btn" class="btn btn-primary" aria-label="Start the Claim Readiness Diagnostic">
+        Start Diagnostic
+      </button>
+    </div>
+    
+    <!-- QUESTION SCREEN (will be populated dynamically) -->
+    <div id="question-screen" class="screen question-screen" role="region" aria-labelledby="question-title" aria-live="polite">
+      <div class="progress-indicator" id="progress-indicator" role="status" aria-live="polite">
+        Step 1 of 5
+      </div>
+      <div class="progress-bar-container" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" aria-label="Diagnostic progress">
+        <div class="progress-bar" id="progress-bar" style="transform: scaleX(0.2);"></div>
+      </div>
+      
+      <h2 class="question-title" id="question-title"></h2>
+      <p class="question-helper" id="question-helper"></p>
+      
+      <div class="answer-options" id="answer-options" role="group" aria-label="Answer options">
+        <!-- Answer cards will be inserted here dynamically -->
+      </div>
+    </div>
+    
+    <!-- RECOMMENDATION SCREEN (will be populated dynamically) -->
+    <div id="recommendation-screen" class="screen recommendation-screen" role="region" aria-labelledby="recommendation-message" aria-live="polite">
+      <div class="recommendation-icon" id="recommendation-icon" aria-hidden="true"></div>
+      <div class="recommendation-message" id="recommendation-message" role="status"></div>
+      
+      <!-- Transparency Layer -->
+      <section class="transparency-layer" aria-labelledby="transparency-title">
+        <h3 id="transparency-title" class="transparency-title">Why this recommendation was shown</h3>
+        <ul class="assessment-areas" id="assessment-areas" role="list" aria-label="Assessment breakdown">
+          <!-- Assessment areas will be inserted here dynamically -->
+        </ul>
+      </section>
+      
+      <!-- CTA Button -->
+      <button id="cta-button" class="btn btn-cta" aria-label="Book a Claim Readiness Review appointment">
+        Book Claim Readiness Review
+      </button>
+    </div>
+  </main>
+  
+  <!-- Load configuration data -->
+  <script src="diagnostic-config.js"></script>
+  
+  <!-- Load diagnostic components -->
+  <script src="ScoringEngine.js"></script>
+  <script src="RecommendationEngine.js"></script>
+  <script src="DiagnosticController.js"></script>
+  <script src="QuestionRenderer.js"></script>
+  <script src="CalendlyIntegration.js"></script>
+  <script src="DataLogger.js"></script>
+  
+  <!-- Calendly Embed Script -->
+  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+  <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+  
+  <!-- Stripe.js -->
+  <script src="https://js.stripe.com/v3/" async></script>
+  
+  <!-- Main diagnostic application -->
+  <script src="diagnostic-main.js"></script>
+</body>
+</html>
