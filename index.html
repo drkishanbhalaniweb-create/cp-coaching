@@ -3651,6 +3651,33 @@
     
     // Run deferred work
     deferNonCriticalWork();
+    
+    // ============================================
+    // REDIRECT TO DIAGNOSTIC ON FIRST VISIT
+    // ============================================
+    
+    /**
+     * Redirect users to the diagnostic page on first visit
+     * Only redirects if user is on the root page without any hash or query params
+     */
+    function redirectToDiagnostic() {
+      // Check if we're on the root page (index.html or /)
+      const isRootPage = window.location.pathname === '/' || 
+                         window.location.pathname === '/index.html' ||
+                         window.location.pathname.endsWith('/index.html');
+      
+      // Check if there's no hash or query parameters (indicating a fresh visit)
+      const hasNoHashOrQuery = !window.location.hash && !window.location.search;
+      
+      // Only redirect if on root page with no hash/query params
+      if (isRootPage && hasNoHashOrQuery) {
+        console.log('Redirecting to diagnostic page...');
+        window.location.href = '/diagnostic.html#main-content';
+      }
+    }
+    
+    // Execute redirect immediately
+    redirectToDiagnostic();
   </script>
 </body>
 
