@@ -6,7 +6,6 @@
  * - QuestionRenderer for UI rendering
  * - ScoringEngine for score calculation
  * - RecommendationEngine for recommendations
- * - CalendlyIntegration for booking
  * - DataLogger for analytics
  * 
  * Requirements: 1.1, 2.1, 2.5, 6.1, 6.2, 6.3, 6.4, 7.1, 8.1, 9.1
@@ -21,7 +20,6 @@ class DiagnosticApp {
   constructor() {
     this.controller = null;
     this.renderer = null;
-    this.calendly = null;
     this.logger = null;
     this.initialized = false;
   }
@@ -41,11 +39,7 @@ class DiagnosticApp {
       // Initialize components
       this.controller = new DiagnosticController();
       this.renderer = new QuestionRenderer(container);
-      this.calendly = new CalendlyIntegration('https://calendly.com/your-link/claim-readiness-review');
       this.logger = new DataLogger();
-
-      // Initialize Calendly
-      await this.calendly.init();
 
       // Wire up event handlers
       this.wireUpEventHandlers();
@@ -87,9 +81,9 @@ class DiagnosticApp {
       }, 400); // Match animation duration
     });
 
-    // Handle CTA button click - redirect to home page
+    // Handle CTA button click - redirect to booking page
     this.renderer.onBookingClicked(() => {
-      console.log('CTA button clicked - redirecting to home page');
+      console.log('CTA button clicked - redirecting to booking page');
       
       // Get the current recommendation
       const recommendation = this.controller.getRecommendation();
@@ -99,17 +93,10 @@ class DiagnosticApp {
       
       // Mark that user has completed diagnostic and wants to book
       sessionStorage.setItem('diagnosticCompleted', 'true');
+      sessionStorage.setItem('diagnosticRecommendation', recommendation.category);
       
-      // Redirect to the home page
-      window.location.href = '/';
-    });
-
-    // Handle successful Calendly booking
-    this.calendly.onEventScheduled((eventData) => {
-      console.log('Booking confirmed:', eventData);
-      
-      // Show success message
-      this.showBookingConfirmation();
+      // Redirect to the booking page
+      window.location.href = '/booking.html';
     });
   }
 

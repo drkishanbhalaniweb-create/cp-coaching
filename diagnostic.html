@@ -6,14 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Answer five quick questions to see if your VA claim is ready to file — or if a review would help. Educational, veteran-first, no email required." />
   
-
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
   
   <!-- Preconnect to external domains for better performance -->
   <link rel="preconnect" href="https://js.stripe.com">
   <link rel="preconnect" href="https://js.stripe.com" crossorigin>
-  <link rel="preconnect" href="https://assets.calendly.com">
-  <link rel="preconnect" href="https://assets.calendly.com" crossorigin>
-  <link rel="preconnect" href="https://calendly.com">
+  <link rel="preconnect" href="https://cal.com">
   
   <style>
     :root {
@@ -312,7 +311,9 @@
     }
     
     .trust-note-icon {
-      font-size: var(--font-size-lg);
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
     }
     
     /* ============================================
@@ -466,9 +467,13 @@
     }
     
     .recommendation-icon {
-      font-size: 64px;
       margin-bottom: var(--spacing-lg);
       filter: drop-shadow(0 4px 8px rgba(15, 36, 61, 0.15));
+    }
+    
+    .recommendation-icon svg {
+      width: 64px;
+      height: 64px;
     }
     
     .recommendation-message {
@@ -531,9 +536,13 @@
     }
     
     .assessment-icon {
-      font-size: var(--font-size-xl);
       flex-shrink: 0;
       filter: drop-shadow(0 2px 4px rgba(15, 36, 61, 0.1));
+    }
+    
+    .assessment-icon svg {
+      width: 24px;
+      height: 24px;
     }
     
     .assessment-label {
@@ -878,19 +887,19 @@
       
       <ul class="trust-notes" role="list" aria-label="Diagnostic features">
         <li class="trust-note">
-          <span class="trust-note-icon" aria-hidden="true">⏱️</span>
+          <i data-lucide="clock" class="trust-note-icon" aria-hidden="true"></i>
           <span>Takes ~2 minutes</span>
         </li>
         <li class="trust-note">
-          <span class="trust-note-icon" aria-hidden="true">🔒</span>
+          <i data-lucide="lock" class="trust-note-icon" aria-hidden="true"></i>
           <span>No email required</span>
         </li>
         <li class="trust-note">
-          <span class="trust-note-icon" aria-hidden="true">🎓</span>
+          <i data-lucide="graduation-cap" class="trust-note-icon" aria-hidden="true"></i>
           <span>Educational & veteran-first</span>
         </li>
         <li class="trust-note">
-          <span class="trust-note-icon" aria-hidden="true">🏛️</span>
+          <i data-lucide="building-2" class="trust-note-icon" aria-hidden="true"></i>
           <span>Not affiliated with the VA</span>
         </li>
       </ul>
@@ -945,17 +954,19 @@
   <script src="RecommendationEngine.js"></script>
   <script src="DiagnosticController.js"></script>
   <script src="QuestionRenderer.js"></script>
-  <script src="CalendlyIntegration.js"></script>
   <script src="DataLogger.js"></script>
-  
-  <!-- Calendly Embed Script -->
-  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
-  <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
   
   <!-- Stripe.js -->
   <script src="https://js.stripe.com/v3/" async></script>
   
   <!-- Main diagnostic application -->
   <script src="diagnostic-main.js"></script>
+  
+  <!-- Initialize Lucide Icons -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      lucide.createIcons();
+    });
+  </script>
 </body>
 </html>

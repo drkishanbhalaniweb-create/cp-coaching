@@ -84,7 +84,7 @@ const RECOMMENDATIONS = {
     scoreRange: { min: 0, max: 0 },
     message: 'Your claim is FULLY READY. No Claim Readiness Review is needed',
     color: '#10b981', // Green
-    icon: '✅',
+    icon: 'check-circle',
     ctaText: 'Book review for peace of mind',
     ctaOptional: true,
     tone: 'objective'
@@ -94,7 +94,7 @@ const RECOMMENDATIONS = {
     scoreRange: { min: 1, max: 2 },
     message: 'Your claim looks strong. A Claim Readiness Review is OPTIONAL for confirmation',
     color: '#3b82f6', // Blue
-    icon: '✓',
+    icon: 'check',
     ctaText: 'Book Claim Readiness Review',
     ctaOptional: false,
     tone: 'objective'
@@ -104,7 +104,7 @@ const RECOMMENDATIONS = {
     scoreRange: { min: 3, max: 6 },
     message: 'Your claim would BENEFIT from a Claim Readiness Review before filing',
     color: '#f59e0b', // Yellow
-    icon: '⚠️',
+    icon: 'alert-triangle',
     ctaText: 'Book Claim Readiness Review',
     ctaOptional: false,
     tone: 'objective'
@@ -114,7 +114,7 @@ const RECOMMENDATIONS = {
     scoreRange: { min: 7, max: 10 },
     message: 'Your claim is NOT READY. A Claim Readiness Review is STRONGLY RECOMMENDED',
     color: '#dc2626', // Red
-    icon: '❌',
+    icon: 'x-circle',
     ctaText: 'Book Claim Readiness Review',
     ctaOptional: false,
     tone: 'serious'
@@ -138,9 +138,9 @@ const ASSESSMENT_AREAS = {
 // ============================================
 
 const STATUS_INDICATORS = {
-  ADEQUATE: { icon: '✅', label: 'Adequate', points: 0 },
-  NEEDS_ATTENTION: { icon: '⚠️', label: 'Needs attention', points: 1 },
-  MISSING: { icon: '❌', label: 'Missing', points: 2 }
+  ADEQUATE: { icon: 'check-circle', label: 'Adequate', points: 0 },
+  NEEDS_ATTENTION: { icon: 'alert-circle', label: 'Needs attention', points: 1 },
+  MISSING: { icon: 'x-circle', label: 'Missing', points: 2 }
 };
 
 // Export for use in other modules

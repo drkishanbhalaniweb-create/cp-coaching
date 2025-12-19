@@ -1,5 +1,6 @@
-const fs = require('fs').promises;
-const path = require('path');
+// File system storage removed - use database or Vercel KV for production
+// const fs = require('fs').promises;
+// const path = require('path');
 
 /**
  * Validates the diagnostic payload structure
@@ -119,40 +120,17 @@ module.exports = async (req, res) => {
       ...req.body
     };
 
-    // Store to JSON file
-    const dataDir = path.join(process.cwd(), 'data');
-    const diagnosticsFile = path.join(dataDir, 'diagnostics.json');
-
-    // Ensure data directory exists
-    try {
-      await fs.mkdir(dataDir, { recursive: true });
-    } catch (error) {
-      // Directory might already exist
-      console.log(`[${requestId}] Data directory already exists or created`);
-    }
-
-    // Read existing diagnostics or start with empty array
-    let diagnostics = [];
-    try {
-      const fileContent = await fs.readFile(diagnosticsFile, 'utf8');
-      diagnostics = JSON.parse(fileContent);
-      console.log(`[${requestId}] Loaded ${diagnostics.length} existing diagnostics`);
-    } catch (error) {
-      // File doesn't exist yet, start with empty array
-      console.log(`[${requestId}] No existing diagnostics file, starting fresh`);
-    }
-
-    // Append new diagnostic
-    diagnostics.push(diagnosticEntry);
-
-    // Write back to file
-    await fs.writeFile(diagnosticsFile, JSON.stringify(diagnostics, null, 2));
-    console.log(`[${requestId}] Diagnostic stored successfully. Total diagnostics: ${diagnostics.length}`);
+    // TEMPORARY FIX: Log to console instead of file system
+    // Vercel serverless functions have read-only filesystem
+    // TODO: Integrate with Vercel KV, database, or external storage
+    console.log(`[${requestId}] DIAGNOSTIC DATA:`, JSON.stringify(diagnosticEntry, null, 2));
+    console.log(`[${requestId}] Diagnostic logged successfully (console only - no persistent storage)`);
 
     // Return success response
     res.status(200).json({
       success: true,
-      id
+      id,
+      note: 'Data logged to console. Configure persistent storage for production.'
     });
 
   } catch (error) {

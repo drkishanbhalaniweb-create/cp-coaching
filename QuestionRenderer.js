@@ -199,8 +199,12 @@ class QuestionRenderer {
     // Update recommendation icon
     const iconElement = recommendationScreen.querySelector('#recommendation-icon');
     if (iconElement) {
-      iconElement.textContent = recommendationData.icon;
+      iconElement.innerHTML = `<i data-lucide="${recommendationData.icon}" style="width: 64px; height: 64px;"></i>`;
       iconElement.setAttribute('aria-label', `Recommendation: ${recommendationData.category}`);
+      // Reinitialize Lucide icons
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
     }
 
     // Update recommendation message
@@ -266,7 +270,7 @@ class QuestionRenderer {
       // Create icon element
       const iconElement = doc.createElement('span');
       iconElement.className = 'assessment-icon';
-      iconElement.textContent = status.icon;
+      iconElement.innerHTML = `<i data-lucide="${status.icon}"></i>`;
       iconElement.setAttribute('aria-hidden', 'true');
 
       // Create label element
@@ -286,6 +290,11 @@ class QuestionRenderer {
 
       assessmentAreasContainer.appendChild(areaElement);
     });
+    
+    // Reinitialize Lucide icons after rendering
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
   }
 
   /**
