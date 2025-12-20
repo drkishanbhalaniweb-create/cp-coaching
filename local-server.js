@@ -75,7 +75,7 @@ const server = http.createServer(async (req, res) => {
   const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
   let filePath = '.' + parsedUrl.pathname;
   if (filePath === './') {
-    filePath = './index.html';
+    filePath = './diagnostic.html';
   }
 
   const extname = String(path.extname(filePath)).toLowerCase();
