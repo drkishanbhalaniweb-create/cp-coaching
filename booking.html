@@ -531,7 +531,7 @@
       }
       
       // Initialize Stripe
-      const stripe = Stripe('pk_live_51SVcFoGp9b54FZ4DnEJBUFWqKZ3lSP8QDxjLfhkX8fJyM4qJAR6aWfBWfDsjTBmwE3YDbE6kyUpWHLiH1XXz9jEt00YH4ZDUkq');
+      const stripe = Stripe('pk_test_51SVaSlPZSF0DdZdshpYD2a9pkPDYjL0CvmkdnNaAl6GQDgPQS86z85t75Fq23rxQx1ywv2eKpYDYYxUD3mTWsO2I00BbEfPiXO');
       
       // Handle payment button click
       const checkoutButton = document.getElementById('checkout-button');
@@ -584,30 +584,38 @@
         document.getElementById('payment-section').style.display = 'none';
         document.getElementById('booking-section').style.display = 'block';
         
-        // Initialize Cal.com inline embed
-        if (typeof Cal !== 'undefined') {
-          Cal("inline", {
-            elementOrSelector: "#cal-embed",
-            calLink: "mdnexus-lkd3ut/claim-readiness-review",
-            layout: "month_view",
-            config: {
-              theme: "light"
-            }
-          });
-          
-          // Track when booking is completed
-          Cal("on", {
-            action: "bookingSuccessful",
-            callback: (e) => {
-              console.log("Booking successful!", e.detail);
-              // Store booking data
-              sessionStorage.setItem('bookingCompleted', 'true');
-              sessionStorage.setItem('bookingData', JSON.stringify(e.detail));
-              // You can redirect to a success page or show a confirmation
-              alert('Appointment booked successfully! You will receive a confirmation email.');
-            }
-          });
-        }
+        // Wait for Cal to be fully loaded before initializing
+        const initCal = () => {
+          if (typeof Cal !== 'undefined') {
+            Cal("inline", {
+              elementOrSelector: "#cal-embed",
+              calLink: "mdnexus-lkd3ut/claim-readiness-review",
+              layout: "month_view",
+              config: {
+                theme: "light"
+              }
+            });
+            
+            // Track when booking is completed
+            Cal("on", {
+              action: "bookingSuccessful",
+              callback: (e) => {
+                console.log("Booking successful!", e.detail);
+                // Store booking data
+                sessionStorage.setItem('bookingCompleted', 'true');
+                sessionStorage.setItem('bookingData', JSON.stringify(e.detail));
+                // You can redirect to a success page or show a confirmation
+                alert('Appointment booked successfully! You will receive a confirmation email.');
+              }
+            });
+          } else {
+            // Cal not loaded yet, try again in 100ms
+            setTimeout(initCal, 100);
+          }
+        };
+        
+        // Start trying to initialize Cal
+        initCal();
       }
     });
   </script>

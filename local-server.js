@@ -53,10 +53,10 @@ const server = http.createServer(async (req, res) => {
             },
           ],
           mode: 'payment',
-          success_url: `${domain}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-          cancel_url: `${domain}/index.html`,
+          success_url: `${domain}/booking.html?payment_success=true&session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${domain}/booking.html`,
           metadata: {
-            service: 'C&P Exam Coaching Session',
+            service: 'Claim Readiness Review',
           },
         });
 
