@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Payment Successful – Schedule Your Session | Military Disability Nexus</title>
+    <title>Payment Successful – Schedule Your Claim Readiness Review | Military Disability Nexus</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet" />
     <style>
@@ -194,18 +194,18 @@
     <div class="container">
         <div class="success-header">
             <div class="success-icon">✓</div>
-            <h1>Booking Confirmed!</h1>
-            <p class="subtitle">Your payment was successful and your C&amp;P Exam Coaching Session is confirmed.</p>
+            <h1>Payment Successful!</h1>
+            <p class="subtitle">Your payment has been processed. You'll be redirected to schedule your Claim Readiness Review in a moment.</p>
         </div>
         <div class="info-box">
             <h2>📋 What Happens Next</h2>
-            <p>You've successfully booked and paid for your 60‑minute C&amp;P Exam Coaching Session. Here's what to expect:</p>
+            <p>Your payment has been processed successfully. Here's what happens next:</p>
             <ul>
-                <li>You'll receive a confirmation email with session details and a calendar invite</li>
-                <li>Your booking is confirmed and secured with your payment</li>
-                <li>Before the session, gather any exam notices or notes about your symptoms</li>
-                <li>We'll meet via phone or secure video at your scheduled time</li>
-                <li>If you need to reschedule, use the link in your confirmation email</li>
+                <li>You'll be redirected to the Cal.com booking page in 10 seconds</li>
+                <li>Select your preferred time slot for the Claim Readiness Review</li>
+                <li>Fill in your details and confirm the appointment</li>
+                <li>You'll receive a confirmation email with session details</li>
+                <li>Before the session, gather any relevant documents about your claim</li>
             </ul>
         </div>
         <div class="info-box">
@@ -237,19 +237,49 @@
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
         
-        // Get session ID from URL
+        // Get session ID and booking status from URL
         const urlParams = new URLSearchParams(window.location.search);
         const sessionId = urlParams.get('session_id');
+        const bookingComplete = urlParams.get('booking_complete');
         
         // Display session ID
         const sessionIdDisplay = document.getElementById('session-id-display');
-        if (sessionId) {
+        
+        if (bookingComplete === 'true') {
+            // User just completed booking on Cal.com
+            document.querySelector('h1').textContent = 'Booking Confirmed!';
+            document.querySelector('.subtitle').textContent = 'Your Claim Readiness Review has been successfully scheduled. Check your email for confirmation details.';
+            
+            // Update info box
+            const infoBox = document.querySelector('.info-box');
+            infoBox.innerHTML = `
+                <h2>✓ Appointment Scheduled</h2>
+                <p>Your Claim Readiness Review appointment has been confirmed. Here's what to expect:</p>
+                <ul>
+                    <li>You'll receive a confirmation email with the appointment details</li>
+                    <li>A calendar invite will be sent to your email address</li>
+                    <li>Before the session, gather any relevant documents about your claim</li>
+                    <li>We'll meet via phone or secure video at your scheduled time</li>
+                    <li>If you need to reschedule, use the link in your confirmation email</li>
+                </ul>
+            `;
+            
+            // Remove countdown timer
+            const countdownElement = document.querySelector('div[style*="position: fixed"]');
+            if (countdownElement) {
+                countdownElement.remove();
+            }
+            
+            sessionIdDisplay.textContent = sessionStorage.getItem('paymentSessionId') || 'Not available';
+            console.log('Booking completed successfully');
+        } else if (sessionId) {
+            // User just completed payment
             sessionIdDisplay.textContent = sessionId;
             console.log('Payment successful. Session ID:', sessionId);
             
-            // Clear any pending booking data from session storage
-            sessionStorage.removeItem('pendingBookingSessionId');
-            sessionStorage.removeItem('pendingBookingData');
+            // Store session ID for Cal.com booking
+            sessionStorage.setItem('paymentSessionId', sessionId);
+            sessionStorage.setItem('paymentCompleted', 'true');
             
             // Log booking confirmation
             console.log('Booking confirmed after successful payment');
@@ -258,29 +288,100 @@
             if (typeof gtag !== 'undefined') {
                 gtag('event', 'purchase', {
                     transaction_id: sessionId,
-                    value: 150.00,
+                    value: 225.00,
                     currency: 'USD',
                     items: [{
-                        item_id: 'cp-exam-coaching',
-                        item_name: 'C&P Exam Coaching Session',
-                        price: 150.00,
+                        item_id: 'claim-readiness-review',
+                        item_name: 'Claim Readiness Review',
+                        price: 225.00,
                         quantity: 1
                     }]
                 });
                 
                 gtag('event', 'booking_confirmed', {
                     event_category: 'Booking',
-                    event_label: 'CP Exam Coaching',
-                    value: 150.00
+                    event_label: 'Claim Readiness Review',
+                    value: 225.00
                 });
             }
+            
+            // Redirect to Cal.com booking page after 10 seconds
+            let countdown = 10;
+            const countdownElement = document.createElement('div');
+            countdownElement.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #163b63, #0f243d);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 12px;
+                font-weight: 600;
+                box-shadow: 0 10px 30px rgba(22, 59, 99, 0.3);
+                z-index: 1000;
+                font-size: 14px;
+            `;
+            countdownElement.textContent = `Opening booking in ${countdown}s...`;
+            document.body.appendChild(countdownElement);
+            
+            const redirectTimer = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = `Opening booking in ${countdown}s...`;
+                
+                if (countdown <= 0) {
+                    clearInterval(redirectTimer);
+                    countdownElement.remove();
+                    
+                    // Load Cal.com script
+                    const calScript = document.createElement('script');
+                    calScript.src = 'https://app.cal.com/embed/embed.js';
+                    calScript.async = true;
+                    document.head.appendChild(calScript);
+                    
+                    // Wait for Cal to load and open modal
+                    let calCheckAttempts = 0;
+                    const checkCalLoaded = setInterval(() => {
+                        calCheckAttempts++;
+                        if (typeof Cal !== 'undefined') {
+                            clearInterval(checkCalLoaded);
+                            console.log('Cal.com loaded, opening modal...');
+                            
+                            // Open Cal.com modal
+                            Cal("modal", {
+                                calLink: "mdnexus-lkd3ut/claim-readiness-review",
+                                config: {
+                                    layout: "month_view",
+                                    theme: "light"
+                                }
+                            });
+                            
+                            // Listen for booking success
+                            Cal("on", {
+                                action: "bookingSuccessful",
+                                callback: (e) => {
+                                    console.log("Booking successful!", e.detail);
+                                    // Redirect to success page with booking_complete flag
+                                    setTimeout(() => {
+                                        window.location.href = '/success.html?booking_complete=true';
+                                    }, 1000);
+                                }
+                            });
+                        } else if (calCheckAttempts > 50) {
+                            clearInterval(checkCalLoaded);
+                            console.error('Cal.com failed to load, redirecting to Cal.com page...');
+                            // Fallback: redirect to Cal.com page directly
+                            window.location.href = 'https://cal.com/mdnexus-lkd3ut/claim-readiness-review';
+                        }
+                    }, 100);
+                }
+            }, 1000);
         } else {
             sessionIdDisplay.textContent = 'Not available';
             console.warn('No session ID found in URL');
         }
         
         // Show success message
-        console.log('Payment and booking confirmed successfully');
+        console.log('Payment and booking flow confirmed successfully');
     </script>
 </body>
 

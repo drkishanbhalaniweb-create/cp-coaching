@@ -467,6 +467,16 @@
           id="cal-embed"
           style="width:100%;height:600px;overflow:scroll">
         </div>
+        
+        <!-- Fallback link if embed doesn't load -->
+        <div id="cal-fallback" style="display: none; text-align: center; padding: var(--spacing-xl); background: rgba(255, 255, 255, 0.6); border-radius: var(--radius-md); margin-top: var(--spacing-lg);">
+          <p style="color: var(--gray-600); margin-bottom: var(--spacing-lg);">
+            If the calendar doesn't load, you can book directly:
+          </p>
+          <a href="https://cal.com/mdnexus-lkd3ut/claim-readiness-review" target="_blank" class="btn btn-primary" style="display: inline-block;">
+            Open Calendar in New Window
+          </a>
+        </div>
       </div>
     </div>
     
@@ -523,101 +533,179 @@
   
   <!-- Main Application Script -->
   <script>
-    // Wait for all scripts to load
-    window.addEventListener('load', function() {
-      // Initialize Lucide Icons
+    // Initialize Lucide Icons
+    function initLucide() {
       if (typeof lucide !== 'undefined') {
         lucide.createIcons();
       }
+    }
+    
+    // Initialize Stripe
+    const stripe = Stripe('pk_test_51SVaSlPZSF0DdZdshpYD2a9pkPDYjL0CvmkdnNaAl6GQDgPQS86z85t75Fq23rxQx1ywv2eKpYDYYxUD3mTWsO2I00BbEfPiXO');
+    
+    // Track if Cal has been initialized
+    let calInitialized = false;
+    
+    // Initialize Cal.com when it's available
+    function initCal() {
+      // Prevent duplicate initialization
+      if (calInitialized) {
+        console.log('Cal.com already initialized, skipping...');
+        return true;
+      }
       
-      // Initialize Stripe
-      const stripe = Stripe('pk_test_51SVaSlPZSF0DdZdshpYD2a9pkPDYjL0CvmkdnNaAl6GQDgPQS86z85t75Fq23rxQx1ywv2eKpYDYYxUD3mTWsO2I00BbEfPiXO');
+      if (typeof Cal !== 'undefined') {
+        console.log('Cal.com loaded, initializing...');
+        console.log('Cal object type:', typeof Cal);
+        console.log('Cal.com version check:', Cal);
+        
+        try {
+          // Verify the embed container exists
+          const embedContainer = document.getElementById('cal-embed');
+          if (!embedContainer) {
+            console.error('Cal embed container not found!');
+            return false;
+          }
+          console.log('Cal embed container found:', embedContainer);
+          
+          // Initialize Cal.com with error handling
+          Cal("inline", {
+            elementOrSelector: "#cal-embed",
+            calLink: "mdnexus-lkd3ut/claim-readiness-review",
+            layout: "month_view",
+            config: {
+              theme: "light"
+            }
+          });
+          
+          console.log('Cal.com inline call completed');
+          
+          // Track when booking is completed
+          Cal("on", {
+            action: "bookingSuccessful",
+            callback: (e) => {
+              console.log("Booking successful!", e.detail);
+              // Store booking data
+              sessionStorage.setItem('bookingCompleted', 'true');
+              sessionStorage.setItem('bookingData', JSON.stringify(e.detail));
+              // Redirect back to success page
+              setTimeout(() => {
+                window.location.href = '/success.html?booking_complete=true';
+              }, 1500);
+            }
+          });
+          
+          calInitialized = true;
+          console.log('Cal.com initialized successfully');
+          return true;
+        } catch (error) {
+          console.error('Error initializing Cal.com:', error);
+          console.error('Error stack:', error.stack);
+          return false;
+        }
+      } else {
+        console.log('Cal.com not loaded yet, retrying...');
+        return false;
+      }
+    }
+    
+    // Retry Cal initialization with exponential backoff
+    function retryCalInit(attempt = 0) {
+      const maxAttempts = 50; // 5 seconds max (50 * 100ms)
+      
+      if (initCal()) {
+        // Cal initialized successfully, hide fallback
+        const fallback = document.getElementById('cal-fallback');
+        if (fallback) fallback.style.display = 'none';
+        return;
+      }
+      
+      if (attempt < maxAttempts) {
+        setTimeout(() => retryCalInit(attempt + 1), 100);
+      } else {
+        console.error('Failed to initialize Cal.com after multiple attempts');
+        // Show fallback link
+        const fallback = document.getElementById('cal-fallback');
+        if (fallback) {
+          fallback.style.display = 'block';
+          console.log('Showing Cal.com fallback link');
+        }
+      }
+    }
+    
+    // Setup payment button and check for payment success
+    function setupPage() {
+      // Initialize Lucide
+      initLucide();
       
       // Handle payment button click
       const checkoutButton = document.getElementById('checkout-button');
-      checkoutButton.addEventListener('click', async function() {
-        try {
-          checkoutButton.disabled = true;
-          checkoutButton.innerHTML = '<i data-lucide="loader" style="width: 20px; height: 20px; animation: spin 1s linear infinite;"></i><span>Processing...</span>';
-          
-          // Call your API to create checkout session
-          const response = await fetch('/api/create-checkout-session', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              service: 'claim-readiness-review',
-              amount: 22500, // $225 in cents
-            }),
-          });
-          
-          const session = await response.json();
-          
-          if (session.error) {
-            throw new Error(session.error);
+      if (checkoutButton) {
+        checkoutButton.addEventListener('click', async function() {
+          try {
+            checkoutButton.disabled = true;
+            checkoutButton.innerHTML = '<i data-lucide="loader" style="width: 20px; height: 20px; animation: spin 1s linear infinite;"></i><span>Processing...</span>';
+            
+            // Call your API to create checkout session
+            const response = await fetch('/api/create-checkout-session', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                service: 'claim-readiness-review',
+                amount: 22500, // $225 in cents
+              }),
+            });
+            
+            const session = await response.json();
+            
+            if (session.error) {
+              throw new Error(session.error);
+            }
+            
+            // Redirect to Stripe Checkout
+            const result = await stripe.redirectToCheckout({
+              sessionId: session.sessionId,
+            });
+            
+            if (result.error) {
+              throw new Error(result.error.message);
+            }
+          } catch (error) {
+            console.error('Payment error:', error);
+            alert('Payment failed. Please try again.');
+            checkoutButton.disabled = false;
+            checkoutButton.innerHTML = '<i data-lucide="lock" style="width: 20px; height: 20px;"></i><span>Pay $225 & Schedule Appointment</span>';
+            initLucide();
           }
-          
-          // Redirect to Stripe Checkout
-          const result = await stripe.redirectToCheckout({
-            sessionId: session.sessionId,
-          });
-          
-          if (result.error) {
-            throw new Error(result.error.message);
-          }
-        } catch (error) {
-          console.error('Payment error:', error);
-          alert('Payment failed. Please try again.');
-          checkoutButton.disabled = false;
-          checkoutButton.innerHTML = '<i data-lucide="lock" style="width: 20px; height: 20px;"></i><span>Pay $225 & Schedule Appointment</span>';
-          lucide.createIcons();
-        }
-      });
+        });
+      }
       
       // Check if payment was successful (from URL parameter)
       const urlParams = new URLSearchParams(window.location.search);
       const paymentSuccess = urlParams.get('payment_success');
       
       if (paymentSuccess === 'true') {
+        console.log('Payment successful, showing Cal.com booking...');
         // Hide payment section, show booking section
         document.getElementById('payment-section').style.display = 'none';
         document.getElementById('booking-section').style.display = 'block';
         
-        // Wait for Cal to be fully loaded before initializing
-        const initCal = () => {
-          if (typeof Cal !== 'undefined') {
-            Cal("inline", {
-              elementOrSelector: "#cal-embed",
-              calLink: "mdnexus-lkd3ut/claim-readiness-review",
-              layout: "month_view",
-              config: {
-                theme: "light"
-              }
-            });
-            
-            // Track when booking is completed
-            Cal("on", {
-              action: "bookingSuccessful",
-              callback: (e) => {
-                console.log("Booking successful!", e.detail);
-                // Store booking data
-                sessionStorage.setItem('bookingCompleted', 'true');
-                sessionStorage.setItem('bookingData', JSON.stringify(e.detail));
-                // You can redirect to a success page or show a confirmation
-                alert('Appointment booked successfully! You will receive a confirmation email.');
-              }
-            });
-          } else {
-            // Cal not loaded yet, try again in 100ms
-            setTimeout(initCal, 100);
-          }
-        };
-        
-        // Start trying to initialize Cal
-        initCal();
+        // Start Cal initialization with retry logic
+        retryCalInit();
       }
-    });
+    }
+    
+    // Run setup when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupPage);
+    } else {
+      setupPage();
+    }
+    
+    // Also run on window load as backup
+    window.addEventListener('load', setupPage);
   </script>
   
   <style>
