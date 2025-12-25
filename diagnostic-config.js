@@ -13,56 +13,61 @@ const QUESTIONS = [
   {
     id: 'service_connection',
     number: 1,
-    title: 'Service connection clearly documented?',
-    helper: 'Medical records, nexus letters, or documented in-service events linking the condition',
+    title: 'Are you confident the VA can clearly see how your condition is connected to service?',
+    helper: 'A diagnosis alone isn\'t enough — the VA looks for specific medical or service evidence linking the condition to your time in service.',
+    category: 'Service Connection',
     options: [
-      { text: 'No', points: 2 },
-      { text: 'Somewhat', points: 1 },
-      { text: 'Yes', points: 0 }
+      { text: 'No — the connection is not clearly shown', points: 2 },
+      { text: 'Somewhat — parts are there, but I\'m not fully sure', points: 1 },
+      { text: 'Yes — the connection is clearly documented', points: 0 }
     ]
   },
   {
     id: 'denial_handling',
     number: 2,
-    title: 'Prior VA denial reasons addressed?',
-    helper: 'Previous denial letters explain exactly what was missing',
+    title: 'If you were denied before, do you fully understand — and have you fixed — the actual reason for denial?',
+    helper: 'Many veterans later realize they were fixing the wrong issue because denial letters are easy to misunderstand.',
+    category: 'Denial Handling',
     options: [
-      { text: 'No', points: 2 },
-      { text: 'Partially', points: 1 },
-      { text: 'Yes', points: 0 }
+      { text: 'No — I\'m not sure what the reason was', points: 2 },
+      { text: 'Somewhat — I think I understand but I\'m not certain', points: 1 },
+      { text: 'Yes — I understand and have addressed it', points: 0 }
     ]
   },
   {
     id: 'pathway',
     number: 3,
-    title: 'Correct claim pathway selected?',
-    helper: 'New, supplemental, or increase claims must follow the correct path',
+    title: 'Are you certain you\'re filing under the correct claim type for your situation?',
+    helper: 'Filing a new, supplemental, or increase claim under the wrong path can delay or derail a claim.',
+    category: 'Claim Pathway',
     options: [
-      { text: 'Not sure', points: 2 },
-      { text: 'Somewhat', points: 1 },
-      { text: 'Yes', points: 0 }
+      { text: 'No — I\'m not sure which type applies', points: 2 },
+      { text: 'Somewhat — I think I know but I\'m not certain', points: 1 },
+      { text: 'Yes — I\'m certain of the correct pathway', points: 0 }
     ]
   },
   {
     id: 'severity',
     number: 4,
-    title: 'Medical severity & impact documented?',
-    helper: 'Symptoms, flare-ups, and functional impact on daily life',
+    title: 'Is your medical evidence detailed enough to support the rating level you\'re seeking?',
+    helper: 'The VA rates based on documented severity, frequency, and functional impact — not just a diagnosis.',
+    category: 'Medical Evidence',
     options: [
-      { text: 'No', points: 2 },
-      { text: 'Somewhat', points: 1 },
-      { text: 'Yes', points: 0 }
+      { text: 'No — my evidence is minimal or vague', points: 2 },
+      { text: 'Somewhat — I have some details but could be more thorough', points: 1 },
+      { text: 'Yes — my evidence is detailed and comprehensive', points: 0 }
     ]
   },
   {
     id: 'secondaries',
     number: 5,
-    title: 'All conditions & secondaries identified?',
-    helper: 'Secondary conditions are often missed but materially affect ratings',
+    title: 'Have you identified all conditions caused or worsened by your service-connected issues?',
+    helper: 'Secondary conditions are often missed and discovered only after a denial or low rating.',
+    category: 'Secondary Conditions',
     options: [
-      { text: 'No', points: 2 },
-      { text: 'Somewhat', points: 1 },
-      { text: 'Yes', points: 0 }
+      { text: 'No — I haven\'t considered secondary conditions', points: 2 },
+      { text: 'Somewhat — I\'ve identified some but may have missed others', points: 1 },
+      { text: 'Yes — I\'ve identified all related conditions', points: 0 }
     ]
   }
 ];

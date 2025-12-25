@@ -79,7 +79,8 @@ class QuestionRenderer {
     // Update progress indicator
     const progressIndicator = questionScreen.querySelector('#progress-indicator');
     if (progressIndicator) {
-      progressIndicator.textContent = `Step ${currentStep} of ${totalSteps}`;
+      const category = questionData.category || '';
+      progressIndicator.textContent = `Question ${currentStep} of ${totalSteps} • ${category}`;
     }
 
     // Update progress bar using transform for better performance (no reflow)
@@ -195,6 +196,12 @@ class QuestionRenderer {
     // Hide all screens and show recommendation screen
     this.hideAllScreens();
     recommendationScreen.classList.add('active');
+
+    // Update question counter with category
+    const questionCounter = recommendationScreen.querySelector('#question-counter');
+    if (questionCounter && recommendationData.questionCategory) {
+      questionCounter.textContent = `Question 5 of 5 • ${recommendationData.questionCategory}`;
+    }
 
     // Update recommendation icon
     const iconElement = recommendationScreen.querySelector('#recommendation-icon');

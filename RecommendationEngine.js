@@ -160,7 +160,8 @@ class RecommendationEngine {
       icon: config.icon,
       ctaText: config.ctaText,
       ctaOptional: config.ctaOptional,
-      tone: config.tone
+      tone: config.tone,
+      questionCategory: 'Claim Readiness'
     };
   }
 }
