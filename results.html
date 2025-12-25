@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Your Claim Readiness Results | Military Disability Nexus</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="View your personalized Claim Readiness Review results and book your consultation." />
+  
+  <!-- Hide content on load to prevent flash -->
+  <style>
+    body {
+      visibility: hidden;
+    }
+  </style>
+  
+  <!-- Preconnect to external domains -->
+  <link rel="preconnect" href="https://cal.com">
+  <link rel="preconnect" href="https://js.stripe.com">
+  <link rel="preconnect" href="https://js.stripe.com" crossorigin>
+  
+  <style>
+    :root {
+      /* Brand Colors */
+      --navy-primary: #163b63;
+      --navy-dark: #0f243d;
+      --navy-light: #1f4f85;
+      --blue-accent: #3b82f6;
+      --red-cta: #dc2626;
+      
+      /* Neutral Colors */
+      --white: #ffffff;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-600: #4b5563;
+      --gray-900: #111827;
+      
+      /* Spacing */
+      --spacing-xs: 8px;
+      --spacing-sm: 12px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --spacing-2xl: 48px;
+      
+      /* Border Radius */
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      
+      /* Shadows */
+      --shadow-medium: 0 15px 40px rgba(15, 36, 61, 0.18);
+      
+      /* Typography */
+      --font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --font-size-sm: 14px;
+      --font-size-base: 16px;
+      --font-size-lg: 18px;
+      --font-size-xl: 24px;
+      --font-size-2xl: 32px;
+      --font-size-3xl: 40px;
+      
+      /* Transitions */
+      --transition-normal: 300ms ease;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: var(--font-body);
+      color: var(--gray-900);
+      background: linear-gradient(135deg, 
+        #0f243d 0%, 
+        #163b63 25%, 
+        #1f4f85 50%, 
+        #163b63 75%, 
+        #0f243d 100%);
+      background-attachment: fixed;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 30% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 80%, rgba(31, 79, 133, 0.15) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--spacing-2xl) var(--spacing-md);
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* ============================================
+       RESULTS SECTION
+       ============================================ */
+    .results-section {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-2xl);
+      box-shadow: var(--shadow-medium);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      margin-bottom: var(--spacing-2xl);
+    }
+    
+    .results-header {
+      text-align: center;
+      margin-bottom: var(--spacing-2xl);
+    }
+    
+    .results-header h1 {
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
+      color: var(--navy-dark);
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .results-header p {
+      font-size: var(--font-size-lg);
+      color: var(--gray-600);
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .results-header-meta {
+      font-size: var(--font-size-base);
+      color: var(--navy-primary);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .results-header-divider {
+      width: 100%;
+      height: 2px;
+      background: var(--navy-primary);
+      margin-top: var(--spacing-md);
+    }
+    
+    .recommendation-icon {
+      margin-bottom: var(--spacing-lg);
+      filter: drop-shadow(0 4px 8px rgba(15, 36, 61, 0.15));
+      display: none;
+    }
+    
+    .recommendation-icon svg {
+      width: 64px;
+      height: 64px;
+    }
+    
+    .recommendation-message {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      margin-bottom: var(--spacing-2xl);
+      line-height: 1.4;
+      color: var(--navy-dark);
+      display: none;
+    }
+    
+    .transparency-layer {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-2xl);
+      margin: var(--spacing-2xl) 0;
+      box-shadow: 0 8px 24px rgba(15, 36, 61, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+    
+    .transparency-title {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--navy-dark);
+      margin-bottom: var(--spacing-xl);
+      text-align: center;
+      display: none;
+    }
+    
+    .assessment-areas {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+      list-style: none;
+      padding: 0;
+    }
+    
+    .assessment-area {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md) var(--spacing-lg);
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 4px 12px rgba(15, 36, 61, 0.08);
+      transition: all var(--transition-normal);
+    }
+    
+    .assessment-area:hover {
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 6px 16px rgba(15, 36, 61, 0.12);
+    }
+    
+    .assessment-icon {
+      flex-shrink: 0;
+      filter: drop-shadow(0 2px 4px rgba(15, 36, 61, 0.1));
+      display: none;
+    }
+    
+    .assessment-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+    
+    .assessment-label {
+      font-size: var(--font-size-base);
+      color: var(--navy-dark);
+      font-weight: 600;
+    }
+    
+    .assessment-status {
+      margin-left: auto;
+      font-size: var(--font-size-sm);
+      color: var(--gray-600);
+      font-weight: 500;
+    }
+    
+    /* ============================================
+       BOOKING SECTION
+       ============================================ */
+    .booking-section {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-2xl);
+      box-shadow: var(--shadow-medium);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      margin-bottom: var(--spacing-2xl);
+    }
+    
+    .booking-header {
+      text-align: center;
+      margin-bottom: var(--spacing-2xl);
+    }
+    
+    .booking-header h2 {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--navy-dark);
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .booking-header p {
+      font-size: var(--font-size-lg);
+      color: var(--gray-600);
+    }
+    
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-xl);
+      margin-bottom: var(--spacing-2xl);
+    }
+    
+    .info-section {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      box-shadow: var(--shadow-medium);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+    
+    .info-title {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--navy-dark);
+      margin-bottom: var(--spacing-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    
+    .info-list {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+      padding: var(--spacing-md);
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      transition: all var(--transition-normal);
+    }
+    
+    .info-item:hover {
+      background: rgba(255, 255, 255, 0.8);
+      transform: translateX(4px);
+    }
+    
+    .info-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .info-icon {
+      flex-shrink: 0;
+      color: var(--navy-primary);
+      margin-top: 2px;
+    }
+    
+    .info-text {
+      flex: 1;
+    }
+    
+    .info-text strong {
+      display: block;
+      color: var(--navy-dark);
+      margin-bottom: var(--spacing-xs);
+      font-size: var(--font-size-base);
+    }
+    
+    .info-text p {
+      color: var(--gray-600);
+      font-size: var(--font-size-sm);
+      line-height: 1.6;
+    }
+    
+    .payment-section {
+      text-align: center;
+      margin-bottom: var(--spacing-2xl);
+    }
+    
+    .payment-section h3 {
+      font-size: var(--font-size-xl);
+      color: var(--navy-dark);
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .payment-section p {
+      color: var(--gray-600);
+      margin-bottom: var(--spacing-xl);
+    }
+    
+    .btn-cta {
+      background: linear-gradient(135deg, var(--red-cta), #b91c1c);
+      color: var(--white);
+      box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3);
+      font-size: var(--font-size-lg);
+      padding: var(--spacing-lg) var(--spacing-2xl);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      font-weight: 600;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    
+    .btn-cta::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.5s ease;
+    }
+    
+    .btn-cta:hover::before {
+      transform: translateX(100%);
+    }
+    
+    .btn-cta:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 32px rgba(220, 38, 38, 0.4);
+    }
+    
+    .btn-cta:focus {
+      outline: 3px solid var(--red-cta);
+      outline-offset: 3px;
+    }
+    
+    .btn-cta:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .trust-badges {
+      display: flex;
+      justify-content: center;
+      gap: var(--spacing-lg);
+      flex-wrap: wrap;
+      margin-top: var(--spacing-2xl);
+    }
+    
+    .trust-badge {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      font-size: var(--font-size-sm);
+      color: var(--navy-dark);
+      font-weight: 600;
+    }
+    
+    .trust-badge-icon {
+      color: var(--blue-accent);
+    }
+    
+    /* ============================================
+       SKELETON LOADING
+       ============================================ */
+    .skeleton {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+    }
+    
+    @keyframes loading {
+      0% {
+        background-position: 200% 0;
+      }
+      100% {
+        background-position: -200% 0;
+      }
+    }
+    
+    .skeleton-text {
+      height: 16px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    
+    .skeleton-title {
+      height: 24px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      width: 60%;
+    }
+    
+    .skeleton-block {
+      height: 100px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+    
+    /* Hide content during loading */
+    .results-section.loading {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    
+    .results-section.loading #recommendation-section,
+    .results-section.loading #assessment-areas,
+    .results-section.loading #info-grid {
+      display: none;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .info-grid {
+        grid-template-columns: 1fr !important;
+      }
+      
+      .results-header h1 {
+        font-size: var(--font-size-2xl);
+      }
+      
+      .booking-header h2 {
+        font-size: var(--font-size-xl);
+      }
+      
+      .info-title {
+        font-size: var(--font-size-lg);
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        padding: var(--spacing-lg) var(--spacing-sm);
+      }
+      
+      .results-section,
+      .booking-section,
+      .info-section {
+        padding: var(--spacing-lg);
+      }
+      
+      .results-header h1 {
+        font-size: var(--font-size-xl);
+      }
+      
+      .trust-badges {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .info-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- RESULTS SECTION -->
+    <div class="results-section">
+      <div class="results-header">
+        <h1>Claim Readiness Check</h1>
+        <p>Identify common VA claim risks before filing.</p>
+        <div class="results-header-meta" id="results-meta">Question 5 of 5 • Result</div>
+        <div class="results-header-divider"></div>
+      </div>
+      
+      <!-- Main Recommendation Section -->
+      <div id="recommendation-section" style="margin-bottom: var(--spacing-2xl);">
+        <div id="recommendation-main-message" style="margin-bottom: var(--spacing-lg);"></div>
+        <div id="recommendation-subtitle" style="color: var(--gray-600); margin-bottom: var(--spacing-lg); font-size: var(--font-size-base);"></div>
+        <div id="readiness-badge" style="display: inline-block; padding: var(--spacing-sm) var(--spacing-lg); border-radius: var(--radius-md); font-weight: 600; margin-bottom: var(--spacing-2xl);"></div>
+      </div>
+      
+      <!-- Assessment Areas -->
+      <section class="transparency-layer" aria-labelledby="transparency-title">
+        <ul class="assessment-areas" id="assessment-areas" role="list" aria-label="Assessment breakdown">
+          <!-- Assessment areas will be inserted here dynamically -->
+        </ul>
+      </section>
+      
+      <!-- Two Column Info Section -->
+      <div class="info-grid" id="info-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-xl); margin-top: var(--spacing-2xl);">
+        <!-- Why This Recommendation Was Shown -->
+        <div class="info-block" id="why-block" style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: var(--radius-lg); padding: var(--spacing-xl); box-shadow: var(--shadow-medium); border: 1px solid rgba(255, 255, 255, 0.4);">
+          <h3 style="font-size: var(--font-size-xl); font-weight: 700; color: var(--navy-dark); margin-bottom: var(--spacing-lg); display: flex; align-items: center; gap: var(--spacing-sm);">
+            <span style="display: inline-block; width: 4px; height: 24px; background: #991b1b; border-radius: 2px;"></span>
+            Why This Recommendation Was Shown
+          </h3>
+          <ul id="why-list" style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--spacing-md);">
+            <!-- Items will be inserted here dynamically -->
+          </ul>
+        </div>
+        
+        <!-- What a Claim Readiness Review Focuses On -->
+        <div class="info-block" id="what-block" style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: var(--radius-lg); padding: var(--spacing-xl); box-shadow: var(--shadow-medium); border: 1px solid rgba(255, 255, 255, 0.4);">
+          <h3 style="font-size: var(--font-size-xl); font-weight: 700; color: var(--navy-dark); margin-bottom: var(--spacing-lg); display: flex; align-items: center; gap: var(--spacing-sm);">
+            <span style="display: inline-block; width: 4px; height: 24px; background: #163b63; border-radius: 2px;"></span>
+            What a Claim Readiness Review Focuses On
+          </h3>
+          <ul id="what-list" style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--spacing-md);">
+            <!-- Items will be inserted here dynamically -->
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <!-- BOOKING SECTION -->
+    <div class="booking-section">
+      <div class="booking-header">
+        <h2>Book Your Claim Readiness Review</h2>
+        <p>Schedule a personalized consultation with our expert team to ensure your VA claim is ready for success</p>
+      </div>
+      
+      <!-- Main Content Grid -->
+      <div class="content-grid">
+        <!-- What to Expect Section -->
+        <div class="info-section">
+          <h3 class="info-title">
+            <i data-lucide="clipboard-check" class="info-icon"></i>
+            What to Expect
+          </h3>
+          <ul class="info-list">
+            <li class="info-item">
+              <i data-lucide="clock" class="info-icon"></i>
+              <div class="info-text">
+                <strong>60-Minute Consultation</strong>
+                <p>Comprehensive review of your claim documentation and strategy</p>
+              </div>
+            </li>
+            <li class="info-item">
+              <i data-lucide="user-check" class="info-icon"></i>
+              <div class="info-text">
+                <strong>Expert Guidance</strong>
+                <p>Work with experienced professionals who understand VA claims</p>
+              </div>
+            </li>
+            <li class="info-item">
+              <i data-lucide="file-text" class="info-icon"></i>
+              <div class="info-text">
+                <strong>Detailed Action Plan</strong>
+                <p>Receive specific recommendations to strengthen your claim</p>
+              </div>
+            </li>
+            <li class="info-item">
+              <i data-lucide="shield-check" class="info-icon"></i>
+              <div class="info-text">
+                <strong>Confidential & Secure</strong>
+                <p>Your information is protected and handled with care</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+        
+        <!-- What to Prepare Section -->
+        <div class="info-section">
+          <h3 class="info-title">
+            <i data-lucide="list-checks" class="info-icon"></i>
+            What to Prepare
+          </h3>
+          <ul class="info-list">
+            <li class="info-item">
+              <i data-lucide="folder" class="info-icon"></i>
+              <div class="info-text">
+                <strong>Service Records</strong>
+                <p>DD-214, service treatment records, and deployment documentation</p>
+              </div>
+            </li>
+            <li class="info-item">
+              <i data-lucide="heart-pulse" class="info-icon"></i>
+              <div class="info-text">
+                <strong>Medical Documentation</strong>
+                <p>Current diagnoses, treatment records, and medical opinions</p>
+              </div>
+            </li>
+            <li class="info-item">
+              <i data-lucide="file-check" class="info-icon"></i>
+              <div class="info-text">
+                <strong>Previous VA Decisions</strong>
+                <p>Any rating decisions, denial letters, or pending claims</p>
+              </div>
+            </li>
+            <li class="info-item">
+              <i data-lucide="message-circle-question" class="info-icon"></i>
+              <div class="info-text">
+                <strong>Your Questions</strong>
+                <p>List of concerns or areas where you need clarification</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- Payment Section -->
+      <div class="payment-section">
+        <h3>
+          <i data-lucide="credit-card" style="width: 24px; height: 24px; display: inline-block; vertical-align: middle; margin-right: 8px;"></i>
+          Complete Payment to Book
+        </h3>
+        <p>Secure your Claim Readiness Review session for <strong>$225</strong></p>
+        <button id="checkout-button" class="btn-cta">
+          <i data-lucide="lock" style="width: 20px; height: 20px;"></i>
+          <span>Pay $225 & Schedule Appointment</span>
+        </button>
+        <p style="color: var(--gray-600); font-size: 14px; margin-top: var(--spacing-lg);">
+          <i data-lucide="shield-check" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>
+          Secure payment powered by Stripe
+        </p>
+      </div>
+    </div>
+    
+    <!-- Trust Badges -->
+    <div class="trust-badges">
+      <div class="trust-badge">
+        <i data-lucide="shield" class="trust-badge-icon"></i>
+        <span>Veteran-Owned</span>
+      </div>
+      <div class="trust-badge">
+        <i data-lucide="lock" class="trust-badge-icon"></i>
+        <span>HIPAA Compliant</span>
+      </div>
+      <div class="trust-badge">
+        <i data-lucide="star" class="trust-badge-icon"></i>
+        <span>5-Star Rated</span>
+      </div>
+      <div class="trust-badge">
+        <i data-lucide="users" class="trust-badge-icon"></i>
+        <span>1000+ Veterans Helped</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  
+  <!-- Stripe.js -->
+  <script src="https://js.stripe.com/v3/"></script>
+  
+  <!-- Load configuration data -->
+  <script src="diagnostic-config.js"></script>
+  
+  <!-- Load diagnostic components -->
+  <script src="ScoringEngine.js"></script>
+  <script src="RecommendationEngine.js"></script>
+  <script src="DiagnosticController.js"></script>
+  
+  <!-- Cal.com Embed Script -->
+  <script type="text/javascript">
+    (function (C, A, L) { 
+      let p = function (a, ar) { 
+        a.q.push(ar); 
+      }; 
+      let d = C.document; 
+      C.Cal = C.Cal || function () { 
+        let cal = C.Cal; 
+        let ar = arguments; 
+        if (!cal.q) { 
+          cal.q = []; 
+        } 
+        cal.q.push(ar); 
+        return cal; 
+      }; 
+      let t = d.createElement(L); 
+      t.async = 1; 
+      t.src = A; 
+      let s = d.getElementsByTagName(L)[0]; 
+      s.parentNode.insertBefore(t, s); 
+    })(window, "https://app.cal.com/embed/embed.js", "script");
+  </script>
+  
+  <!-- Main Application Script -->
+  <script>
+    // Initialize Lucide Icons
+    function initLucide() {
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    }
+    
+    // Initialize Stripe
+    const stripe = Stripe('pk_test_51SVaSlPZSF0DdZdshpYD2a9pkPDYjL0CvmkdnNaAl6GQDgPQS86z85t75Fq23rxQx1ywv2eKpYDYYxUD3mTWsO2I00BbEfPiXO');
+    
+    // Check if user has completed the diagnostic
+    function checkDiagnosticCompletion() {
+      const diagnosticCompleted = sessionStorage.getItem('diagnosticCompleted');
+      const diagnosticData = localStorage.getItem('diagnostic_session');
+      
+      // If no diagnostic data or not marked as completed, redirect back to diagnostic
+      if (!diagnosticCompleted || !diagnosticData) {
+        console.warn('No diagnostic data found, redirecting to diagnostic');
+        window.location.href = '/diagnostic.html';
+        return false;
+      }
+      
+      return true;
+    }
+    
+    // Render results from diagnostic data
+    function renderResults() {
+      try {
+        // Verify user completed the diagnostic
+        if (!checkDiagnosticCompletion()) {
+          return;
+        }
+        
+        // Get diagnostic data from localStorage
+        const diagnosticData = JSON.parse(localStorage.getItem('diagnostic_session') || '{}');
+        
+        if (!diagnosticData.answers || Object.keys(diagnosticData.answers).length === 0) {
+          console.warn('No diagnostic data found, showing empty results');
+          return;
+        }
+        
+        // Calculate score
+        const scoringEngine = new ScoringEngine();
+        const score = scoringEngine.calculateTotalScore(
+          Object.fromEntries(
+            Object.entries(diagnosticData.answers).map(([key, val]) => [key, val.points])
+          )
+        );
+        
+        // Get recommendation
+        const recommendationEngine = new RecommendationEngine();
+        const recommendationData = recommendationEngine.getRecommendationData(score);
+        
+        // Determine readiness level and styling based on score
+        let readinessLevel, mainMessage, subtitle, badgeText, badgeColor, badgeBgColor, buttonText, buttonSubtext;
+        
+        if (score <= 2) {
+          // Strong - Ready to file
+          readinessLevel = 'Strong';
+          mainMessage = 'Your claim appears READY to file';
+          subtitle = 'Your answers suggest your claim is well-prepared and aligned with VA requirements.';
+          badgeText = 'Claim readiness: Strong';
+          badgeColor = '#10b981';
+          badgeBgColor = '#ecfdf5';
+          buttonText = 'Optional Final Readiness Review';
+          buttonSubtext = 'Even strong claims benefit from a final double-check.';
+        } else if (score <= 6) {
+          // Moderate - Mostly ready
+          readinessLevel = 'Mostly ready';
+          mainMessage = 'Your claim appears mostly ready — with a few areas worth reviewing';
+          subtitle = 'This is common. Many veterans in this range file confidently but later discover small issues.';
+          badgeText = 'Claim readiness: Mostly ready';
+          badgeColor = '#b45309';
+          badgeBgColor = '#fffbeb';
+          buttonText = 'Get an Honest Claim Readiness Review';
+          buttonSubtext = 'No guarantees. No filing. Just clarity.';
+        } else {
+          // High risk
+          readinessLevel = 'High risk';
+          mainMessage = 'Your answers suggest your claim may face avoidable denial risks';
+          subtitle = 'Most veterans only uncover these issues after a denial — often months later.';
+          badgeText = 'Claim readiness: High risk';
+          badgeColor = '#991b1b';
+          badgeBgColor = '#fef2f2';
+          buttonText = 'Get an Honest Claim Readiness Review';
+          buttonSubtext = 'Avoid preventable mistakes before filing.';
+        }
+        
+        // Update main recommendation message
+        const mainMessageEl = document.getElementById('recommendation-main-message');
+        if (mainMessageEl) {
+          mainMessageEl.innerHTML = `<h2 style="font-size: var(--font-size-2xl); font-weight: 700; color: ${badgeColor}; margin: 0; line-height: 1.3;">${mainMessage}</h2>`;
+        }
+        
+        // Update subtitle
+        const subtitleEl = document.getElementById('recommendation-subtitle');
+        if (subtitleEl) {
+          subtitleEl.textContent = subtitle;
+        }
+        
+        // Update readiness badge
+        const badgeEl = document.getElementById('readiness-badge');
+        if (badgeEl) {
+          badgeEl.style.backgroundColor = badgeBgColor;
+          badgeEl.style.color = badgeColor;
+          badgeEl.textContent = badgeText;
+        }
+        
+        // Update button text and subtext
+        const checkoutButton = document.getElementById('checkout-button');
+        if (checkoutButton) {
+          checkoutButton.innerHTML = `
+            <i data-lucide="lock" style="width: 20px; height: 20px;"></i>
+            <span>${buttonText}</span>
+          `;
+        }
+        
+        const paymentSection = document.querySelector('.payment-section');
+        if (paymentSection) {
+          const subtextEl = paymentSection.querySelector('p:last-of-type');
+          if (subtextEl && subtextEl.textContent.includes('Secure payment')) {
+            // Insert subtext before the secure payment note
+            const newSubtext = document.createElement('p');
+            newSubtext.style.color = 'var(--gray-600)';
+            newSubtext.style.marginBottom = 'var(--spacing-lg)';
+            newSubtext.textContent = buttonSubtext;
+            subtextEl.parentNode.insertBefore(newSubtext, subtextEl);
+          }
+        }
+        
+        // Render assessment areas with score-based labels
+        const assessmentAreasContainer = document.getElementById('assessment-areas');
+        if (assessmentAreasContainer) {
+          assessmentAreasContainer.innerHTML = '';
+          
+          // Assessment labels based on score level
+          let assessmentLabels;
+          
+          if (score <= 2) {
+            // Strong - all clear/addressed
+            assessmentLabels = {
+              'service_connection': { label: 'Service connection clarity', status: 'Clear' },
+              'denial_handling': { label: 'Denial handling', status: 'Addressed' },
+              'pathway': { label: 'Claim pathway selection', status: 'Correct' },
+              'severity': { label: 'Severity documentation', status: 'Documented' },
+              'secondaries': { label: 'Secondary conditions', status: 'Identified' }
+            };
+          } else if (score <= 6) {
+            // Moderate - mixed clarity
+            assessmentLabels = {
+              'service_connection': { label: 'Service connection clarity', status: 'Mostly clear' },
+              'denial_handling': { label: 'Denial handling', status: 'Some uncertainty' },
+              'pathway': { label: 'Claim pathway selection', status: 'Needs confirmation' },
+              'severity': { label: 'Severity documentation', status: 'Could be stronger' },
+              'secondaries': { label: 'Secondary conditions', status: 'Possibly missed' }
+            };
+          } else {
+            // High risk - needs clarification
+            assessmentLabels = {
+              'service_connection': { label: 'Service connection clarity', status: 'Needs clarification' },
+              'denial_handling': { label: 'Denial handling', status: 'Unclear' },
+              'pathway': { label: 'Claim pathway selection', status: 'Needs review' },
+              'severity': { label: 'Severity documentation', status: 'Unclear' },
+              'secondaries': { label: 'Secondary conditions', status: 'Likely missing' }
+            };
+          }
+          
+          for (const [questionId, answer] of Object.entries(diagnosticData.answers)) {
+            const labelData = assessmentLabels[questionId];
+            if (!labelData) continue;
+            
+            const li = document.createElement('li');
+            li.className = 'assessment-area';
+            li.style.display = 'flex';
+            li.style.justifyContent = 'space-between';
+            li.style.alignItems = 'center';
+            li.style.padding = 'var(--spacing-md) var(--spacing-lg)';
+            li.style.background = 'rgba(255, 255, 255, 0.6)';
+            li.style.backdropFilter = 'blur(8px)';
+            li.style.borderRadius = 'var(--radius-md)';
+            li.style.border = '1px solid rgba(255, 255, 255, 0.4)';
+            li.style.transition = 'all var(--transition-normal)';
+            li.innerHTML = `
+              <div class="assessment-label" style="font-size: var(--font-size-base); color: var(--navy-dark); font-weight: 600;">${labelData.label}</div>
+              <div class="assessment-status" style="font-size: var(--font-size-base); color: var(--navy-dark); font-weight: 600;">${labelData.status}</div>
+            `;
+            assessmentAreasContainer.appendChild(li);
+          }
+        }
+        
+        // Populate "Why This Recommendation Was Shown" section
+        const whyList = document.getElementById('why-list');
+        if (whyList) {
+          whyList.innerHTML = '';
+          
+          let whyItems;
+          if (score <= 2) {
+            whyItems = [
+              { title: 'Service connection clarity', desc: 'Your nexus documentation is well-established' },
+              { title: 'Claim pathway selection', desc: 'You\'ve selected the appropriate filing pathway' },
+              { title: 'Severity documentation', desc: 'Medical evidence supports your claimed conditions' },
+              { title: 'Secondary conditions', desc: 'Related conditions are properly identified' }
+            ];
+          } else if (score <= 6) {
+            whyItems = [
+              { title: 'Service connection clarity', desc: 'Needs clarification based on your responses' },
+              { title: 'Claim pathway selection', desc: 'Requires confirmation before filing' },
+              { title: 'Severity documentation', desc: 'Could be strengthened to support ratings' },
+              { title: 'Secondary conditions', desc: 'Possibly missing or underdeveloped' }
+            ];
+          } else {
+            whyItems = [
+              { title: 'Service connection clarity', desc: 'Needs clarification based on your responses' },
+              { title: 'Claim pathway selection', desc: 'Requires confirmation before filing' },
+              { title: 'Severity documentation', desc: 'Could be strengthened to support ratings' },
+              { title: 'Secondary conditions', desc: 'Possibly missing or underdeveloped' }
+            ];
+          }
+          
+          whyItems.forEach(item => {
+            const li = document.createElement('li');
+            li.style.padding = 'var(--spacing-md)';
+            li.style.background = 'rgba(255, 255, 255, 0.6)';
+            li.style.backdropFilter = 'blur(8px)';
+            li.style.borderRadius = 'var(--radius-md)';
+            li.style.border = '1px solid rgba(255, 255, 255, 0.4)';
+            li.style.borderLeft = '4px solid #991b1b';
+            li.innerHTML = `
+              <div style="font-weight: 600; color: var(--navy-dark); margin-bottom: 4px;">${item.title}</div>
+              <div style="font-size: var(--font-size-sm); color: var(--gray-600);">${item.desc}</div>
+            `;
+            whyList.appendChild(li);
+          });
+        }
+        
+        // Populate "What a Claim Readiness Review Focuses On" section
+        const whatList = document.getElementById('what-list');
+        if (whatList) {
+          whatList.innerHTML = '';
+          
+          const whatItems = [
+            { title: 'Evidence alignment', desc: 'How your records map to VA requirements' },
+            { title: 'Denial risk identification', desc: 'Issues that commonly lead to denials or delays' },
+            { title: 'Claim strategy clarity', desc: 'Whether to file now, fix first, or wait' },
+            { title: 'Independent & confidential', desc: 'No filing, no guarantees, no obligation' }
+          ];
+          
+          whatItems.forEach(item => {
+            const li = document.createElement('li');
+            li.style.padding = 'var(--spacing-md)';
+            li.style.background = 'rgba(255, 255, 255, 0.6)';
+            li.style.backdropFilter = 'blur(8px)';
+            li.style.borderRadius = 'var(--radius-md)';
+            li.style.border = '1px solid rgba(255, 255, 255, 0.4)';
+            li.style.borderLeft = '4px solid #163b63';
+            li.innerHTML = `
+              <div style="font-weight: 600; color: var(--navy-dark); margin-bottom: 4px;">${item.title}</div>
+              <div style="font-size: var(--font-size-sm); color: var(--gray-600);">${item.desc}</div>
+            `;
+            whatList.appendChild(li);
+          });
+        }
+        
+        // Remove loading state
+        const resultsSection = document.querySelector('.results-section');
+        if (resultsSection) {
+          resultsSection.classList.remove('loading');
+        }
+        
+        // Initialize Lucide icons
+        initLucide();
+        
+      } catch (error) {
+        console.error('Error rendering results:', error);
+      }
+    }
+    
+    // Setup payment button
+    function setupPage() {
+      // Add loading state to results section
+      const resultsSection = document.querySelector('.results-section');
+      if (resultsSection) {
+        resultsSection.classList.add('loading');
+      }
+      
+      // Initialize Lucide
+      initLucide();
+      
+      // Render results
+      renderResults();
+      
+      // Handle payment button click
+      const checkoutButton = document.getElementById('checkout-button');
+      if (checkoutButton) {
+        checkoutButton.addEventListener('click', async function() {
+          try {
+            checkoutButton.disabled = true;
+            checkoutButton.innerHTML = '<i data-lucide="loader" style="width: 20px; height: 20px; animation: spin 1s linear infinite;"></i><span>Processing...</span>';
+            
+            // Call your API to create checkout session
+            const response = await fetch('/api/create-checkout-session', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                service: 'claim-readiness-review',
+                amount: 22500, // $225 in cents
+              }),
+            });
+            
+            const session = await response.json();
+            
+            if (session.error) {
+              throw new Error(session.error);
+            }
+            
+            // Redirect to Stripe Checkout
+            const result = await stripe.redirectToCheckout({
+              sessionId: session.sessionId,
+            });
+            
+            if (result.error) {
+              throw new Error(result.error.message);
+            }
+          } catch (error) {
+            console.error('Payment error:', error);
+            alert('Payment failed. Please try again.');
+            checkoutButton.disabled = false;
+            checkoutButton.innerHTML = '<i data-lucide="lock" style="width: 20px; height: 20px;"></i><span>Pay $225 & Schedule Appointment</span>';
+            initLucide();
+          }
+        });
+      }
+    }
+    
+    // Run setup when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupPage);
+    } else {
+      setupPage();
+    }
+    
+    // Also run on window load as backup
+    window.addEventListener('load', function() {
+      setupPage();
+      // Show body after everything is loaded
+      document.body.style.visibility = 'visible';
+    });
+  </script>
+  
+  <style>
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</body>
+</html>

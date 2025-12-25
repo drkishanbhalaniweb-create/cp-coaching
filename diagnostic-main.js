@@ -81,22 +81,10 @@ class DiagnosticApp {
       }, 400); // Match animation duration
     });
 
-    // Handle CTA button click - redirect to booking page
+    // Handle CTA button click - redirect to results page
     this.renderer.onBookingClicked(() => {
-      console.log('CTA button clicked - redirecting to booking page');
-      
-      // Get the current recommendation
-      const recommendation = this.controller.getRecommendation();
-      
-      // Log the booking intent
-      console.log(`Booking initiated from recommendation: ${recommendation.category}`);
-      
-      // Mark that user has completed diagnostic and wants to book
-      sessionStorage.setItem('diagnosticCompleted', 'true');
-      sessionStorage.setItem('diagnosticRecommendation', recommendation.category);
-      
-      // Redirect to the booking page
-      window.location.href = '/booking.html';
+      console.log('CTA button clicked - redirecting to results page');
+      this.redirectToResults();
     });
   }
 
@@ -134,6 +122,11 @@ class DiagnosticApp {
         
         // Log diagnostic data to backend
         this.logDiagnosticData();
+        
+        // Automatically redirect to results page after a brief delay
+        setTimeout(() => {
+          this.redirectToResults();
+        }, 1500); // Give user time to see the recommendation before redirecting
       }
       
       // Transition in the new screen
@@ -175,6 +168,29 @@ class DiagnosticApp {
     } catch (error) {
       console.error('Failed to log diagnostic data:', error);
       // Don't block user experience on logging failure
+    }
+  }
+
+  /**
+   * Redirect to results page with diagnostic data
+   */
+  redirectToResults() {
+    try {
+      const recommendation = this.controller.getRecommendation();
+      
+      // Log the redirect
+      console.log(`Redirecting to results page with recommendation: ${recommendation.category}`);
+      
+      // Mark that user has completed diagnostic
+      sessionStorage.setItem('diagnosticCompleted', 'true');
+      sessionStorage.setItem('diagnosticRecommendation', recommendation.category);
+      
+      // Redirect to the results page
+      window.location.href = '/results.html';
+    } catch (error) {
+      console.error('Failed to redirect to results:', error);
+      // Fallback redirect
+      window.location.href = '/results.html';
     }
   }
 
@@ -272,6 +288,9 @@ function initializeDiagnostic() {
   app.init().catch(error => {
     console.error('Failed to initialize diagnostic:', error);
   });
+  
+  // Show body after initialization
+  document.body.style.visibility = 'visible';
 }
 
 // Initialize when DOM is ready
