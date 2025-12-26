@@ -106,16 +106,10 @@ class DiagnosticApp {
         
         this.renderer.renderQuestion(questionData, questionNumber, 5);
       } else if (state === 'recommendation') {
-        // Calculate score and get recommendation
+        // Don't render recommendation screen - redirect immediately
+        // Calculate score and get recommendation for logging
         const score = this.controller.calculateScore();
         const recommendation = this.controller.getRecommendation();
-        
-        // Render recommendation screen
-        this.renderer.renderRecommendation(recommendation);
-        
-        // Render transparency layer
-        const answers = this.controller.getAnswers();
-        this.renderer.renderTransparency(answers);
         
         // Save to localStorage
         this.saveToLocalStorage();
@@ -123,10 +117,11 @@ class DiagnosticApp {
         // Log diagnostic data to backend
         this.logDiagnosticData();
         
-        // Automatically redirect to results page after a brief delay
-        setTimeout(() => {
-          this.redirectToResults();
-        }, 1500); // Give user time to see the recommendation before redirecting
+        // Redirect immediately without showing recommendation screen
+        this.redirectToResults();
+        
+        // Skip the transition in since we're redirecting
+        return;
       }
       
       // Transition in the new screen
