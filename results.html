@@ -724,8 +724,16 @@
   <!-- Stripe.js -->
   <script src="https://js.stripe.com/v3/"></script>
   
+  <!-- Load configuration data FIRST -->
+  <script src="diagnostic-config.js"></script>
+  
+  <!-- Load diagnostic components BEFORE main script -->
+  <script src="ScoringEngine.js"></script>
+  <script src="RecommendationEngine.js"></script>
+  <script src="DiagnosticController.js"></script>
+  
   <!-- Main Application Script -->
-  <script>
+  <script></script>
     // Initialize Lucide Icons
     function initLucide() {
       if (typeof lucide !== 'undefined') {
