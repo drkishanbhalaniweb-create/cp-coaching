@@ -751,9 +751,11 @@
       
       // If no diagnostic data or not marked as completed, redirect back to diagnostic
       if (!diagnosticCompleted || !diagnosticData) {
-        console.warn('No diagnostic data found, redirecting to diagnostic');
-        window.location.href = '/diagnostic.html';
-        return false;
+        console.warn('No diagnostic data found');
+        // For development/testing, allow viewing results page
+        // In production, uncomment the redirect below:
+        // window.location.href = '/diagnostic.html';
+        // return false;
       }
       
       return true;
