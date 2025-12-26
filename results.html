@@ -724,38 +724,6 @@
   <!-- Stripe.js -->
   <script src="https://js.stripe.com/v3/"></script>
   
-  <!-- Load configuration data -->
-  <script src="diagnostic-config.js"></script>
-  
-  <!-- Load diagnostic components -->
-  <script src="ScoringEngine.js"></script>
-  <script src="RecommendationEngine.js"></script>
-  <script src="DiagnosticController.js"></script>
-  
-  <!-- Cal.com Embed Script -->
-  <script type="text/javascript">
-    (function (C, A, L) { 
-      let p = function (a, ar) { 
-        a.q.push(ar); 
-      }; 
-      let d = C.document; 
-      C.Cal = C.Cal || function () { 
-        let cal = C.Cal; 
-        let ar = arguments; 
-        if (!cal.q) { 
-          cal.q = []; 
-        } 
-        cal.q.push(ar); 
-        return cal; 
-      }; 
-      let t = d.createElement(L); 
-      t.async = 1; 
-      t.src = A; 
-      let s = d.getElementsByTagName(L)[0]; 
-      s.parentNode.insertBefore(t, s); 
-    })(window, "https://app.cal.com/embed/embed.js", "script");
-  </script>
-  
   <!-- Main Application Script -->
   <script>
     // Initialize Lucide Icons
@@ -765,8 +733,8 @@
       }
     }
     
-    // Initialize Stripe
-    const stripe = Stripe('pk_test_51SVaSlPZSF0DdZdshpYD2a9pkPDYjL0CvmkdnNaAl6GQDgPQS86z85t75Fq23rxQx1ywv2eKpYDYYxUD3mTWsO2I00BbEfPiXO');
+    // Initialize Stripe with live publishable key
+    const stripe = Stripe('pk_live_YOUR_LIVE_PUBLISHABLE_KEY');
     
     // Check if user has completed the diagnostic
     function checkDiagnosticCompletion() {
@@ -877,14 +845,28 @@
         
         const paymentSection = document.querySelector('.payment-section');
         if (paymentSection) {
-          const subtextEl = paymentSection.querySelector('p:last-of-type');
-          if (subtextEl && subtextEl.textContent.includes('Secure payment')) {
-            // Insert subtext before the secure payment note
-            const newSubtext = document.createElement('p');
-            newSubtext.style.color = 'var(--gray-600)';
-            newSubtext.style.marginBottom = 'var(--spacing-lg)';
-            newSubtext.textContent = buttonSubtext;
-            subtextEl.parentNode.insertBefore(newSubtext, subtextEl);
+          // Find the paragraph that contains "Secure payment"
+          const paragraphs = paymentSection.querySelectorAll('p');
+          let securePaymentPara = null;
+          
+          for (let p of paragraphs) {
+            if (p.textContent.includes('Secure payment')) {
+              securePaymentPara = p;
+              break;
+            }
+          }
+          
+          // If we found it, insert the subtext before it
+          if (securePaymentPara) {
+            // Check if subtext already exists
+            const existingSubtext = securePaymentPara.previousElementSibling;
+            if (!existingSubtext || !existingSubtext.textContent.includes(buttonSubtext)) {
+              const newSubtext = document.createElement('p');
+              newSubtext.style.color = 'var(--gray-600)';
+              newSubtext.style.marginBottom = 'var(--spacing-lg)';
+              newSubtext.textContent = buttonSubtext;
+              securePaymentPara.parentNode.insertBefore(newSubtext, securePaymentPara);
+            }
           }
         }
         
@@ -1085,9 +1067,12 @@
             }
           } catch (error) {
             console.error('Payment error:', error);
-            alert('Payment failed. Please try again.');
+            alert('Payment failed. Please try again or contact support.\n\nError: ' + error.message);
             checkoutButton.disabled = false;
-            checkoutButton.innerHTML = '<i data-lucide="lock" style="width: 20px; height: 20px;"></i><span>Pay $225 & Schedule Appointment</span>';
+            checkoutButton.innerHTML = `
+              <i data-lucide="lock" style="width: 20px; height: 20px;"></i>
+              <span>${buttonText}</span>
+            `;
             initLucide();
           }
         });
