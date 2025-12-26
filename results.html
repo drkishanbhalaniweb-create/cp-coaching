@@ -1027,63 +1027,69 @@
     
     // Setup payment button
     function setupPage() {
-      // Add loading state to results section
-      const resultsSection = document.querySelector('.results-section');
-      if (resultsSection) {
-        resultsSection.classList.add('loading');
-      }
-      
-      // Initialize Lucide
-      initLucide();
-      
-      // Render results
-      renderResults();
-      
-      // Handle payment button click
-      const checkoutButton = document.getElementById('checkout-button');
-      if (checkoutButton) {
-        checkoutButton.addEventListener('click', async function() {
-          try {
-            checkoutButton.disabled = true;
-            checkoutButton.innerHTML = '<i data-lucide="loader" style="width: 20px; height: 20px; animation: spin 1s linear infinite;"></i><span>Processing...</span>';
-            
-            // Call your API to create checkout session
-            const response = await fetch('/api/create-checkout-session', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                service: 'claim-readiness-review',
-                amount: 22500, // $225 in cents
-              }),
-            });
-            
-            const session = await response.json();
-            
-            if (session.error) {
-              throw new Error(session.error);
+      try {
+        // Add loading state to results section
+        const resultsSection = document.querySelector('.results-section');
+        if (resultsSection) {
+          resultsSection.classList.add('loading');
+        }
+        
+        // Initialize Lucide
+        initLucide();
+        
+        // Render results
+        renderResults();
+        
+        // Handle payment button click
+        const checkoutButton = document.getElementById('checkout-button');
+        if (checkoutButton) {
+          checkoutButton.addEventListener('click', async function() {
+            try {
+              checkoutButton.disabled = true;
+              checkoutButton.innerHTML = '<i data-lucide="loader" style="width: 20px; height: 20px; animation: spin 1s linear infinite;"></i><span>Processing...</span>';
+              
+              // Call your API to create checkout session
+              const response = await fetch('/api/create-checkout-session', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  service: 'claim-readiness-review',
+                  amount: 22500, // $225 in cents
+                }),
+              });
+              
+              const session = await response.json();
+              
+              if (session.error) {
+                throw new Error(session.error);
+              }
+              
+              // Redirect to Stripe Checkout
+              const result = await stripe.redirectToCheckout({
+                sessionId: session.sessionId,
+              });
+              
+              if (result.error) {
+                throw new Error(result.error.message);
+              }
+            } catch (error) {
+              console.error('Payment error:', error);
+              alert('Payment failed. Please try again or contact support.\n\nError: ' + error.message);
+              checkoutButton.disabled = false;
+              checkoutButton.innerHTML = `
+                <i data-lucide="lock" style="width: 20px; height: 20px;"></i>
+                <span>${buttonText}</span>
+              `;
+              initLucide();
             }
-            
-            // Redirect to Stripe Checkout
-            const result = await stripe.redirectToCheckout({
-              sessionId: session.sessionId,
-            });
-            
-            if (result.error) {
-              throw new Error(result.error.message);
-            }
-          } catch (error) {
-            console.error('Payment error:', error);
-            alert('Payment failed. Please try again or contact support.\n\nError: ' + error.message);
-            checkoutButton.disabled = false;
-            checkoutButton.innerHTML = `
-              <i data-lucide="lock" style="width: 20px; height: 20px;"></i>
-              <span>${buttonText}</span>
-            `;
-            initLucide();
-          }
-        });
+          });
+        }
+      } catch (error) {
+        console.error('Setup error:', error);
+        // Show body even if there's an error
+        document.body.style.visibility = 'visible';
       }
     }
     
@@ -1094,12 +1100,18 @@
       setupPage();
     }
     
-    // Also run on window load as backup
+    // Show body after everything is loaded
     window.addEventListener('load', function() {
-      setupPage();
-      // Show body after everything is loaded
       document.body.style.visibility = 'visible';
     });
+    
+    // Fallback: show page after 3 seconds if not already shown
+    setTimeout(function() {
+      if (document.body.style.visibility === 'hidden') {
+        document.body.style.visibility = 'visible';
+        console.warn('Fallback: showing page after timeout');
+      }
+    }, 3000);
   </script>
   
   <style>
