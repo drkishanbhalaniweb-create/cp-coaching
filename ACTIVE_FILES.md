@@ -4,7 +4,8 @@
 
 ### HTML Pages
 - **diagnostic.html** - Main diagnostic questionnaire (5 questions)
-- **results.html** - Personalized results page with score-based recommendations
+- **results.html** - Personalized results page with score-based recommendations and payment
+- **success.html** - Payment success page with Cal.com booking widget
 
 ### JavaScript - Core Application
 - **diagnostic-main.js** - Main application entry point and orchestration
@@ -56,7 +57,6 @@
 - index.html - Old landing page
 - booking.html - Old booking page
 - test-booking.html - Test file
-- success.html - Old success page
 - CalIntegration.js - Unintegrated Cal.com integration
 - local-server.js - Development-only server
 
@@ -65,4 +65,7 @@
 2. Completes 5-question diagnostic
 3. Automatically redirected to `/results.html`
 4. Views personalized results based on score
-5. Can book consultation via Stripe payment
+5. Clicks payment button to book consultation
+6. Completes Stripe payment ($225)
+7. Redirected to `/success.html`
+8. Books appointment via Cal.com widget

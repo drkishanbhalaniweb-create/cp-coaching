@@ -93,14 +93,14 @@ module.exports = async (req, res) => {
                 },
             ],
             mode: 'payment',
-            success_url: `${domain}/results.html?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${domain}/booking.html`,
+            success_url: `${domain}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${domain}/results.html`,
             metadata: {
                 service: 'Claim Readiness Review',
                 timestamp: new Date().toISOString(),
-                // Include Calendly booking information for webhook processing
-                calendlyEventUri: calendlyEventUri || '',
-                calendlyInviteeUri: calendlyInviteeUri || '',
+                // Include Cal.com booking information for webhook processing
+                calEventUri: calendlyEventUri || '',
+                calInviteeUri: calendlyInviteeUri || '',
             },
         };
 
