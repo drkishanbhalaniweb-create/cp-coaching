@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Results Page</title>
+</head>
+<body>
+  <h1>Testing Results Page</h1>
+  <p>This page will set up test diagnostic data and redirect to results.html</p>
+  
+  <script>
+    // Create test diagnostic data
+    const testData = {
+      answers: {
+        service_connection: {
+          text: "I have a clear nexus letter",
+          points: 0
+        },
+        denial_handling: {
+          text: "No previous denials",
+          points: 0
+        },
+        pathway: {
+          text: "Filing initial claim",
+          points: 0
+        },
+        severity: {
+          text: "Well documented",
+          points: 0
+        },
+        secondaries: {
+          text: "All identified",
+          points: 0
+        }
+      },
+      score: 0,
+      timestamp: new Date().toISOString()
+    };
+    
+    // Store in localStorage
+    localStorage.setItem('diagnostic_session', JSON.stringify(testData));
+    sessionStorage.setItem('diagnosticCompleted', 'true');
+    
+    // Redirect after 2 seconds
+    setTimeout(() => {
+      window.location.href = '/results.html';
+    }, 2000);
+    
+    document.body.innerHTML += '<p>Redirecting to results page in 2 seconds...</p>';
+  </script>
+</body>
+</html>
