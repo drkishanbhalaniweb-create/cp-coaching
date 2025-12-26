@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Cal.com Integration</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      background: #f3f4f6;
+    }
+    
+    .test-container {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+    
+    h1 {
+      color: #163b63;
+      margin-bottom: 10px;
+    }
+    
+    .status {
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      font-weight: 600;
+    }
+    
+    .status.loading {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    
+    .status.success {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    
+    .status.error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    
+    .cal-container {
+      min-height: 700px;
+      background: #f9fafb;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    
+    .test-info {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      padding: 16px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    
+    .test-info h3 {
+      margin: 0 0 10px 0;
+      color: #1e40af;
+    }
+    
+    .test-info ul {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
+    
+    .test-info li {
+      margin: 5px 0;
+    }
+    
+    button {
+      background: #163b63;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 10px 10px 10px 0;
+    }
+    
+    button:hover {
+      background: #1f4f85;
+    }
+    
+    .console-log {
+      background: #1f2937;
+      color: #10b981;
+      padding: 20px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 20px;
+    }
+    
+    .console-log div {
+      margin: 5px 0;
+      padding: 5px 0;
+      border-bottom: 1px solid #374151;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>🧪 Cal.com Integration Test</h1>
+    <p>Testing Cal.com booking widget integration</p>
+    
+    <div id="status" class="status loading">
+      ⏳ Initializing Cal.com...
+    </div>
+    
+    <div class="test-info">
+      <h3>Test Information:</h3>
+      <ul>
+        <li><strong>Event Link:</strong> mdnexus-lkd3ut/claim-readiness-review</li>
+        <li><strong>Layout:</strong> Month view</li>
+        <li><strong>Theme:</strong> Light</li>
+        <li><strong>Expected:</strong> Calendar should load and show available time slots</li>
+      </ul>
+    </div>
+    
+    <div>
+      <button onclick="testDirectLink()">🔗 Test Direct Cal.com Link</button>
+      <button onclick="reloadEmbed()">🔄 Reload Embed</button>
+      <button onclick="clearLogs()">🗑️ Clear Logs</button>
+    </div>
+    
+    <div class="console-log" id="console">
+      <div><strong>Console Output:</strong></div>
+    </div>
+  </div>
+  
+  <div class="test-container">
+    <h2>Cal.com Embed</h2>
+    <div class="cal-container">
+      <div id="cal-loading" style="text-align: center; padding: 40px;">
+        <div style="font-size: 48px; margin-bottom: 20px;">⏳</div>
+        <p style="font-size: 18px; color: #6b7280;">Loading calendar...</p>
+      </div>
+      <div id="cal-embed"></div>
+    </div>
+  </div>
+  
+  <!-- Cal.com Embed Script -->
+  <script>
+    (function (C, A, L) {
+      let p = function (a, ar) {
+        a.q.push(ar);
+      };
+      let d = C.document;
+      C.Cal =
+        C.Cal ||
+        function () {
+          let cal = C.Cal;
+          let ar = arguments;
+          if (!cal.loaded) {
+            cal.ns = {};
+            cal.q = cal.q || [];
+            d.head.appendChild(d.createElement("script")).src = A;
+            cal.loaded = true;
+          }
+          if (ar[0] === L) {
+            const api = function () {
+              p(api, arguments);
+            };
+            const namespace = ar[1];
+            api.q = api.q || [];
+            typeof namespace === "string"
+              ? (cal.ns[namespace] = api) && p(api, ar)
+              : p(cal, ar);
+            return;
+          }
+          p(cal, ar);
+        };
+    })(window, "https://app.cal.com/embed/embed.js", "init");
+    
+    Cal("init", { origin: "https://cal.com" });
+    
+    // Logging function
+    function log(message, type = 'info') {
+      const console = document.getElementById('console');
+      const timestamp = new Date().toLocaleTimeString();
+      const colors = {
+        info: '#10b981',
+        success: '#22c55e',
+        error: '#ef4444',
+        warning: '#f59e0b'
+      };
+      const div = document.createElement('div');
+      div.style.color = colors[type] || colors.info;
+      div.innerHTML = `[${timestamp}] ${message}`;
+      console.appendChild(div);
+      console.scrollTop = console.scrollHeight;
+    }
+    
+    // Initialize Cal.com
+    function initCal() {
+      log('Starting Cal.com initialization...', 'info');
+      
+      if (typeof Cal === 'undefined') {
+        log('❌ Cal is not defined. Retrying in 100ms...', 'warning');
+        setTimeout(initCal, 100);
+        return;
+      }
+      
+      try {
+        log('✅ Cal object found', 'success');
+        
+        // Hide loading spinner
+        const loadingEl = document.getElementById('cal-loading');
+        if (loadingEl) {
+          loadingEl.style.display = 'none';
+          log('Loading spinner hidden', 'info');
+        }
+        
+        // Initialize Cal.com inline embed
+        log('Initializing Cal.com inline embed...', 'info');
+        Cal("inline", {
+          elementOrSelector: "#cal-embed",
+          calLink: "mdnexus-lkd3ut/claim-readiness-review",
+          layout: "month_view",
+          config: {
+            theme: "light"
+          }
+        });
+        log('✅ Cal.com embed initialized successfully!', 'success');
+        
+        // Update status
+        const statusEl = document.getElementById('status');
+        statusEl.className = 'status success';
+        statusEl.textContent = '✅ Cal.com loaded successfully! Calendar should be visible below.';
+        
+        // Track booking success
+        Cal("on", {
+          action: "bookingSuccessful",
+          callback: (e) => {
+            log('🎉 Booking successful!', 'success');
+            log('Booking details: ' + JSON.stringify(e.detail), 'success');
+            
+            // Store booking data
+            sessionStorage.setItem('bookingCompleted', 'true');
+            sessionStorage.setItem('bookingData', JSON.stringify(e.detail));
+            
+            alert('✅ Appointment booked successfully! Check the console for details.');
+          }
+        });
+        log('Booking success listener attached', 'info');
+        
+      } catch (error) {
+        log('❌ Error initializing Cal.com: ' + error.message, 'error');
+        console.error('Cal.com error:', error);
+        
+        // Update status
+        const statusEl = document.getElementById('status');
+        statusEl.className = 'status error';
+        statusEl.textContent = '❌ Error loading Cal.com. Check console for details.';
+        
+        // Show error in embed area
+        const loadingEl = document.getElementById('cal-loading');
+        if (loadingEl) {
+          loadingEl.innerHTML = `
+            <div style="color: #991b1b; text-align: center;">
+              <div style="font-size: 48px; margin-bottom: 20px;">❌</div>
+              <p style="font-size: 18px; font-weight: 600;">Unable to load calendar</p>
+              <p style="font-size: 14px; margin-top: 10px;">${error.message}</p>
+            </div>
+          `;
+        }
+      }
+    }
+    
+    // Test direct link
+    function testDirectLink() {
+      log('Opening direct Cal.com link...', 'info');
+      window.open('https://cal.com/mdnexus-lkd3ut/claim-readiness-review', '_blank');
+      log('✅ Direct link opened in new tab', 'success');
+    }
+    
+    // Reload embed
+    function reloadEmbed() {
+      log('Reloading Cal.com embed...', 'warning');
+      location.reload();
+    }
+    
+    // Clear logs
+    function clearLogs() {
+      const console = document.getElementById('console');
+      console.innerHTML = '<div><strong>Console Output:</strong></div>';
+      log('Logs cleared', 'info');
+    }
+    
+    // Start initialization when page loads
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCal);
+    } else {
+      initCal();
+    }
+    
+    log('Test page loaded', 'info');
+  </script>
+</body>
+</html>
