@@ -288,9 +288,6 @@ function initializeDiagnostic() {
   app.init().catch(error => {
     console.error('Failed to initialize diagnostic:', error);
   });
-  
-  // Show body after initialization
-  document.body.style.visibility = 'visible';
 }
 
 // Initialize when DOM is ready

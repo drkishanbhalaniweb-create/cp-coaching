@@ -6,13 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="View your personalized Claim Readiness Review results and book your consultation." />
   
-  <!-- Hide content on load to prevent flash -->
-  <style>
-    body {
-      visibility: hidden;
-    }
-  </style>
-  
   <!-- Preconnect to external domains -->
   <link rel="preconnect" href="https://cal.com">
   <link rel="preconnect" href="https://js.stripe.com">
@@ -749,13 +742,9 @@
       const diagnosticCompleted = sessionStorage.getItem('diagnosticCompleted');
       const diagnosticData = localStorage.getItem('diagnostic_session');
       
-      // If no diagnostic data or not marked as completed, redirect back to diagnostic
+      // If no diagnostic data, allow viewing but log warning
       if (!diagnosticCompleted || !diagnosticData) {
-        console.warn('No diagnostic data found');
-        // For development/testing, allow viewing results page
-        // In production, uncomment the redirect below:
-        // window.location.href = '/diagnostic.html';
-        // return false;
+        console.warn('No diagnostic data found - user may have accessed results directly');
       }
       
       return true;
@@ -1101,19 +1090,6 @@
     } else {
       setupPage();
     }
-    
-    // Show body after everything is loaded
-    window.addEventListener('load', function() {
-      document.body.style.visibility = 'visible';
-    });
-    
-    // Fallback: show page after 3 seconds if not already shown
-    setTimeout(function() {
-      if (document.body.style.visibility === 'hidden') {
-        document.body.style.visibility = 'visible';
-        console.warn('Fallback: showing page after timeout');
-      }
-    }, 3000);
   </script>
   
   <style>
