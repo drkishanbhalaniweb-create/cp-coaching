@@ -560,13 +560,6 @@
         <div id="readiness-badge" style="display: inline-block; padding: 10px 24px; border-radius: 50px; font-weight: 700; margin-bottom: var(--spacing-2xl); font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase; background: #ffffff; border: 2px solid;"></div>
       </div>
       
-      <!-- Assessment Areas -->
-      <section class="transparency-layer" aria-labelledby="transparency-title">
-        <ul class="assessment-areas" id="assessment-areas" role="list" aria-label="Assessment breakdown">
-          <!-- Assessment areas will be inserted here dynamically -->
-        </ul>
-      </section>
-      
       <!-- Two Column Info Section -->
       <div class="info-grid" id="info-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-xl); margin-top: var(--spacing-2xl);">
         <!-- Why This Recommendation Was Shown -->
@@ -694,26 +687,6 @@
         </p>
       </div>
     </div>
-    
-    <!-- Trust Badges -->
-    <div class="trust-badges">
-      <div class="trust-badge">
-        <i data-lucide="shield" class="trust-badge-icon"></i>
-        <span>Veteran-Owned</span>
-      </div>
-      <div class="trust-badge">
-        <i data-lucide="lock" class="trust-badge-icon"></i>
-        <span>HIPAA Compliant</span>
-      </div>
-      <div class="trust-badge">
-        <i data-lucide="star" class="trust-badge-icon"></i>
-        <span>5-Star Rated</span>
-      </div>
-      <div class="trust-badge">
-        <i data-lucide="users" class="trust-badge-icon"></i>
-        <span>1000+ Veterans Helped</span>
-      </div>
-    </div>
   </div>
   
   <!-- Lucide Icons -->
@@ -791,7 +764,7 @@
           readinessLevel = 'Strong';
           mainMessage = 'Your claim appears READY to file';
           subtitle = 'Your answers suggest your claim is well-prepared and aligned with VA requirements.';
-          badgeText = 'Claim readiness: Strong';
+          badgeText = 'Claim Strength: Strong';
           badgeColor = '#10b981';
           badgeBgColor = '#ecfdf5';
           buttonText = 'Optional Final Readiness Review';
@@ -801,7 +774,7 @@
           readinessLevel = 'Mostly ready';
           mainMessage = 'Your claim appears mostly ready — with a few areas worth reviewing';
           subtitle = 'This is common. Many veterans in this range file confidently but later discover small issues.';
-          badgeText = 'Claim readiness: Mostly ready';
+          badgeText = 'Claim Strength: Mostly ready';
           badgeColor = '#b45309';
           badgeBgColor = '#fffbeb';
           buttonText = 'Get an Honest Claim Readiness Review';
@@ -811,7 +784,7 @@
           readinessLevel = 'High risk';
           mainMessage = 'Your answers suggest your claim may face avoidable denial risks';
           subtitle = 'Most veterans only uncover these issues after a denial — often months later.';
-          badgeText = 'Claim readiness: High risk';
+          badgeText = 'Claim Strength: High risk';
           badgeColor = '#991b1b';
           badgeBgColor = '#fef2f2';
           buttonText = 'Get an Honest Claim Readiness Review';
@@ -874,93 +847,104 @@
           }
         }
         
-        // Render assessment areas with score-based labels
-        const assessmentAreasContainer = document.getElementById('assessment-areas');
-        if (assessmentAreasContainer) {
-          assessmentAreasContainer.innerHTML = '';
-          
-          // Assessment labels based on score level
-          let assessmentLabels;
-          
-          if (score <= 2) {
-            // Strong - all clear/addressed
-            assessmentLabels = {
-              'service_connection': { label: 'Service connection clarity', status: 'Clear' },
-              'denial_handling': { label: 'Denial handling', status: 'Addressed' },
-              'pathway': { label: 'Claim pathway selection', status: 'Correct' },
-              'severity': { label: 'Severity documentation', status: 'Documented' },
-              'secondaries': { label: 'Secondary conditions', status: 'Identified' }
-            };
-          } else if (score <= 6) {
-            // Moderate - mixed clarity
-            assessmentLabels = {
-              'service_connection': { label: 'Service connection clarity', status: 'Mostly clear' },
-              'denial_handling': { label: 'Denial handling', status: 'Some uncertainty' },
-              'pathway': { label: 'Claim pathway selection', status: 'Needs confirmation' },
-              'severity': { label: 'Severity documentation', status: 'Could be stronger' },
-              'secondaries': { label: 'Secondary conditions', status: 'Possibly missed' }
-            };
-          } else {
-            // High risk - needs clarification
-            assessmentLabels = {
-              'service_connection': { label: 'Service connection clarity', status: 'Needs clarification' },
-              'denial_handling': { label: 'Denial handling', status: 'Unclear' },
-              'pathway': { label: 'Claim pathway selection', status: 'Needs review' },
-              'severity': { label: 'Severity documentation', status: 'Unclear' },
-              'secondaries': { label: 'Secondary conditions', status: 'Likely missing' }
-            };
-          }
-          
-          for (const [questionId, answer] of Object.entries(diagnosticData.answers)) {
-            const labelData = assessmentLabels[questionId];
-            if (!labelData) continue;
-            
-            const li = document.createElement('li');
-            li.className = 'assessment-area';
-            li.innerHTML = `
-              <div class="assessment-label" style="font-size: 15px; color: var(--navy-dark); font-weight: 500;">${labelData.label}</div>
-              <div class="assessment-status" style="font-size: 15px; color: var(--navy-dark); font-weight: 700;">${labelData.status}</div>
-            `;
-            assessmentAreasContainer.appendChild(li);
-          }
-        }
         
-        // Populate "Why This Recommendation Was Shown" section
+        // Populate "Why This Recommendation Was Shown" section - DYNAMIC based on actual answers
         const whyList = document.getElementById('why-list');
-        if (whyList) {
+        const whyBlock = document.getElementById('why-block');
+        
+        if (whyList && whyBlock) {
           whyList.innerHTML = '';
           
-          let whyItems;
-          if (score <= 2) {
-            whyItems = [
-              { title: 'Service connection clarity', desc: 'Your nexus documentation is well-established' },
-              { title: 'Claim pathway selection', desc: 'You\'ve selected the appropriate filing pathway' },
-              { title: 'Severity documentation', desc: 'Medical evidence supports your claimed conditions' },
-              { title: 'Secondary conditions', desc: 'Related conditions are properly identified' }
-            ];
-          } else if (score <= 6) {
-            whyItems = [
-              { title: 'Service connection clarity', desc: 'Needs clarification based on your responses' },
-              { title: 'Claim pathway selection', desc: 'Requires confirmation before filing' },
-              { title: 'Severity documentation', desc: 'Could be strengthened to support ratings' },
-              { title: 'Secondary conditions', desc: 'Possibly missing or underdeveloped' }
-            ];
+          // Map question IDs to display information
+          const questionMap = {
+            service_connection: {
+              title: 'Service connection clarity',
+              descriptions: {
+                0: 'Your nexus documentation is well-established',
+                1: 'Service connection could be clearer',
+                2: 'Service connection is not clearly documented'
+              }
+            },
+            denial_handling: {
+              title: 'Denial handling',
+              descriptions: {
+                0: 'Previous denials properly addressed',
+                1: 'Previous denial reasons may need review',
+                2: 'Previous denial reasons are unclear or unaddressed'
+              }
+            },
+            pathway: {
+              title: 'Claim pathway selection',
+              descriptions: {
+                0: 'You\'ve selected the appropriate filing pathway',
+                1: 'Claim pathway needs confirmation',
+                2: 'Claim pathway is uncertain and needs clarification'
+              }
+            },
+            severity: {
+              title: 'Medical evidence',
+              descriptions: {
+                0: 'Medical evidence supports your claimed conditions',
+                1: 'Medical evidence could be more detailed',
+                2: 'Medical evidence is minimal or lacks detail'
+              }
+            },
+            secondaries: {
+              title: 'Secondary conditions',
+              descriptions: {
+                0: 'Related conditions are properly identified',
+                1: 'Some secondary conditions may be missing',
+                2: 'Secondary conditions have not been considered'
+              }
+            }
+          };
+          
+          // Get actual answers and build dynamic list
+          const answers = diagnosticData.answers || {};
+          const whyItems = [];
+          let hasAnyIssues = false;
+          
+          // Process each question based on actual user answers
+          Object.keys(questionMap).forEach(questionId => {
+            const answer = answers[questionId];
+            if (answer && answer.points !== undefined) {
+              const points = answer.points;
+              const questionInfo = questionMap[questionId];
+              
+              // Only show items with issues (points > 0) OR if score is perfect, show all as positive
+              if (points > 0 || score === 0) {
+                whyItems.push({
+                  title: questionInfo.title,
+                  desc: questionInfo.descriptions[points],
+                  points: points,
+                  borderColor: points === 0 ? '#10b981' : (points === 1 ? '#f59e0b' : '#991b1b')
+                });
+                
+                if (points > 0) {
+                  hasAnyIssues = true;
+                }
+              }
+            }
+          });
+          
+          // If perfect score (0), show all areas as positive with green theme
+          if (score === 0) {
+            whyBlock.style.background = 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)';
+            whyBlock.querySelector('h3').textContent = 'Your Claim Strengths';
           } else {
-            whyItems = [
-              { title: 'Service connection clarity', desc: 'Needs clarification based on your responses' },
-              { title: 'Claim pathway selection', desc: 'Requires confirmation before filing' },
-              { title: 'Severity documentation', desc: 'Could be strengthened to support ratings' },
-              { title: 'Secondary conditions', desc: 'Possibly missing or underdeveloped' }
-            ];
+            // Otherwise use red theme for issues
+            whyBlock.style.background = 'linear-gradient(135deg, #fef2f2 0%, #fce7e7 100%)';
+            whyBlock.querySelector('h3').textContent = 'Why This Recommendation Was Shown';
           }
           
+          // Render the items
           whyItems.forEach(item => {
             const li = document.createElement('li');
             li.style.padding = '14px 18px';
             li.style.background = '#ffffff';
             li.style.borderRadius = '12px';
             li.style.border = 'none';
-            li.style.borderLeft = '5px solid #991b1b';
+            li.style.borderLeft = `5px solid ${item.borderColor}`;
             li.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.06)';
             li.style.transition = 'all 0.2s ease';
             li.innerHTML = `
@@ -977,6 +961,7 @@
           whatList.innerHTML = '';
           
           const whatItems = [
+            { title: 'Service connection review', desc: 'Verify nexus evidence meets VA standards' },
             { title: 'Evidence alignment', desc: 'How your records map to VA requirements' },
             { title: 'Denial risk identification', desc: 'Issues that commonly lead to denials or delays' },
             { title: 'Claim strategy clarity', desc: 'Whether to file now, fix first, or wait' },
